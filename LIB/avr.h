@@ -1,3 +1,7 @@
+// USE pinMode, digitalRead, digitalWrite like Arduino
+// Ex: P12 -> pinMode(12, OUTPUT);
+// Ex: P04 -> pinMode(4, OUTPUT);
+
 #ifndef __AVR__
 #define __AVR__
 
