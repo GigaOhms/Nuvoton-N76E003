@@ -38,15 +38,13 @@ void main (void)
 {
     Set_All_GPIO_Quasi_Mode;
 	
-	TIMER2_DIV_128;
+	// --------------- ISR timer2 1kHz -----------------------
+	TIMER2_DIV_4;
 	TIMER2_Auto_Reload_Delay_Mode;
-	
-	RCMP2L = TIMER_DIV128_VALUE_100ms;
-	RCMP2H = TIMER_DIV128_VALUE_100ms >> 8;
-
+	RCMP2L = TIMER_DIV4_VALUE_1ms;
+	RCMP2H = TIMER_DIV4_VALUE_1ms >> 8;
 	TH2 = 0;
 	TL2 = 0;
-	
 	set_TR2;
 	set_ET2;
     set_EA;		// Enable global interrupts
@@ -54,7 +52,7 @@ void main (void)
 	led_time = millis;
 
     while(1) {
-		if ((uint32_t)(millis - led_time) >= 5) {
+		if ((uint32_t)(millis - led_time) >= 500) {
 			led_time = millis;
 			P12 = ~P12;
 		}
