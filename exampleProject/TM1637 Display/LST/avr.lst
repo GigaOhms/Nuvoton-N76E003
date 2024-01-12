@@ -1,0 +1,322 @@
+C51 COMPILER V9.60.0.0   AVR                                                               01/12/2024 10:34:36 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE AVR
+OBJECT MODULE PLACED IN .\Output\avr.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\..\LIB\avr.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include;..\..\LIB)
+                    - DEFINE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\LST\avr.lst) OBJECT(.\Output\avr.obj)
+
+line level    source
+
+   1          
+   2          #include "N76E003.h"
+   3          #include "SFR_Macro.h"
+   4          #include "Function_define.h"
+   5          #include "Common.h"
+   6          
+   7          #include "avr.h"
+   8          
+   9          void pinMode(uint8_t pin, uint8_t mode) {
+  10   1          bit registerPin = 0;
+  11   1              if (pin == 8 || pin == 9 || pin >= 18 || mode > 0x3)
+  12   1              return;
+  13   1          
+  14   1          registerPin = (pin >= 10) ? 1 : 0;  // P1.x or P0.x
+  15   1          pin %= 10;
+  16   1              
+  17   1          if (mode == QUASI) {
+  18   2              if (registerPin == 1) {
+  19   3                  P1M1 &= ~(1 << pin);
+  20   3                  P1M2 &= ~(1 << pin);
+  21   3              } else {
+  22   3                  P0M1 &= ~(1 << pin);
+  23   3                  P0M2 &= ~(1 << pin);
+  24   3              }
+  25   2          } else if (mode == OUTPUT) {
+  26   2              if (registerPin == 1) {
+  27   3                  P1M1 &= ~(1 << pin);
+  28   3                  P1M2 |= (1 << pin);
+  29   3              } else {
+  30   3                  P0M1 &= ~(1 << pin);
+  31   3                  P0M2 |= (1 << pin);
+  32   3              }
+  33   2          } else if (mode == INPUT) {
+  34   2              if (registerPin == 1) {
+  35   3                  P1M1 |= (1 << pin);
+  36   3                  P1M2 &= ~(1 << pin);
+  37   3              } else {
+  38   3                  P0M1 |= (1 << pin);
+  39   3                  P0M2 &= ~(1 << pin);
+  40   3              }
+  41   2          } else if (mode == INPUT_OD) {
+  42   2              if (registerPin == 1) {
+  43   3                  P1M1 |= (1 << pin);
+  44   3                  P1M2 |= (1 << pin);
+  45   3              } else {
+  46   3                  P0M1 |= (1 << pin);
+  47   3                  P0M2 |= (1 << pin);
+  48   3              }
+  49   2          }
+  50   1      }
+  51          
+  52          
+  53          bit digitalRead(uint8_t pin) {
+  54   1          if (pin == 0) {
+C51 COMPILER V9.60.0.0   AVR                                                               01/12/2024 10:34:36 PAGE 2   
+
+  55   2              return P00;
+  56   2          } else if (pin == 1) {
+  57   2              return P01;
+  58   2          } else if (pin == 2) {
+  59   2              return P02;
+  60   2          } else if (pin == 3) {
+  61   2              return P03;
+  62   2          } else if (pin == 4) {
+  63   2              return P04;
+  64   2          } else if (pin == 5) {
+  65   2              return P05;
+  66   2          } else if (pin == 6) {
+  67   2              return P06;
+  68   2          } else if (pin == 7) {
+  69   2              return P07;
+  70   2          } else if (pin == 10) {
+  71   2              return P10;
+  72   2          } else if (pin == 11) {
+  73   2              return P11;
+  74   2          } else if (pin == 12) {
+  75   2              return P12;
+  76   2          } else if (pin == 13) {
+  77   2              return P13;
+  78   2          } else if (pin == 14) {
+  79   2              return P14;
+  80   2          } else if (pin == 15) {
+  81   2              return P15;
+  82   2          } else if (pin == 16) {
+  83   2              return P16;
+  84   2          } else if (pin == 17) {
+  85   2              return P17;
+  86   2          } else return 0;
+  87   1      }
+  88          
+  89          void digitalWrite(uint8_t pin, bit stt) {
+  90   1          if (pin == 0) {
+  91   2              P00 = stt;
+  92   2          } else if (pin == 1) {
+  93   2              P01 = stt;
+  94   2          } else if (pin == 2) {
+  95   2              P02 = stt;
+  96   2          } else if (pin == 3) {
+  97   2              P03 = stt;
+  98   2          } else if (pin == 4) {
+  99   2              P04 = stt;
+ 100   2          } else if (pin == 5) {
+ 101   2              P05 = stt;
+ 102   2          } else if (pin == 6) {
+ 103   2              P06 = stt;
+ 104   2          } else if (pin == 7) {
+ 105   2              P07 = stt;
+ 106   2          } else if (pin == 10) {
+ 107   2              P10 = stt;
+ 108   2          } else if (pin == 11) {
+ 109   2              P11 = stt;
+ 110   2          } else if (pin == 12) {
+ 111   2              P12 = stt;
+ 112   2          } else if (pin == 13) {
+ 113   2              P13 = stt;
+ 114   2          } else if (pin == 14) {
+ 115   2              P14 = stt;
+ 116   2          } else if (pin == 15) {
+C51 COMPILER V9.60.0.0   AVR                                                               01/12/2024 10:34:36 PAGE 3   
+
+ 117   2              P15 = stt;
+ 118   2          } else if (pin == 16) {
+ 119   2              P16 = stt;
+ 120   2          } else if (pin == 17) {
+ 121   2              P17 = stt;
+ 122   2          }
+ 123   1      }
+ 124          
+ 125          
+ 126          /*
+ 127          #include "N76E003.h"
+ 128          #include "SFR_Macro.h"
+ 129          #include "Function_define.h"
+ 130          #include "Common.h"
+ 131          
+ 132          #include "avr.h"
+ 133          
+ 134          void pinMode(uint8_t pin, uint8_t mode) {
+ 135                  if (pin == 0) {
+ 136                  if (mode == INPUT) {
+ 137                      P00_OpenDrain_Mode;
+ 138                  } else if (mode == OUTPUT)
+ 139                      P00_PushPull_Mode;
+ 140                  } else if (pin == 1) {
+ 141                  if (mode == INPUT) {
+ 142                      P01_OpenDrain_Mode;
+ 143                  } else if (mode == OUTPUT)
+ 144                      P01_PushPull_Mode;
+ 145                  } else if (pin == 2) {
+ 146                  if (mode == INPUT) {
+ 147                      P02_OpenDrain_Mode;
+ 148                  } else if (mode == OUTPUT)
+ 149                      P02_PushPull_Mode;
+ 150                  } else if (pin == 3) {
+ 151                  if (mode == INPUT) {
+ 152                      P03_OpenDrain_Mode;
+ 153                  } else if (mode == OUTPUT)
+ 154                      P03_PushPull_Mode;
+ 155                  } else if (pin == 4) {
+ 156                  if (mode == INPUT) {
+ 157                      P04_OpenDrain_Mode;
+ 158                  } else if (mode == OUTPUT)
+ 159                      P04_PushPull_Mode;
+ 160                  } else if (pin == 5) {
+ 161                  if (mode == INPUT) {
+ 162                      P05_OpenDrain_Mode;
+ 163                  } else if (mode == OUTPUT)
+ 164                      P05_PushPull_Mode;
+ 165                  } else if (pin == 6) {
+ 166                  if (mode == INPUT) {
+ 167                      P06_OpenDrain_Mode;
+ 168                  } else if (mode == OUTPUT)
+ 169                      P06_PushPull_Mode;
+ 170                  } else if (pin == 7) {
+ 171                  if (mode == INPUT) {
+ 172                      P07_OpenDrain_Mode;
+ 173                  } else if (mode == OUTPUT)
+ 174                      P07_PushPull_Mode;
+ 175                  } else if (pin == 10) {
+ 176                  if (mode == INPUT) {
+ 177                      P10_OpenDrain_Mode;
+ 178                  } else if (mode == OUTPUT)
+C51 COMPILER V9.60.0.0   AVR                                                               01/12/2024 10:34:36 PAGE 4   
+
+ 179                      P10_PushPull_Mode;
+ 180                  } else if (pin ==11) {
+ 181                  if (mode == INPUT) {
+ 182                      P11_OpenDrain_Mode;
+ 183                  } else if (mode == OUTPUT)
+ 184                      P11_PushPull_Mode;
+ 185                  } else if (pin == 12) {
+ 186                  if (mode == INPUT) {
+ 187                      P12_OpenDrain_Mode;
+ 188                  } else if (mode == OUTPUT)
+ 189                      P12_PushPull_Mode;
+ 190                  } else if (pin == 13) {
+ 191                  if (mode == INPUT) {
+ 192                      P13_OpenDrain_Mode;
+ 193                  } else if (mode == OUTPUT)
+ 194                      P13_PushPull_Mode;
+ 195                  } else if (pin == 14) {
+ 196                  if (mode == INPUT) {
+ 197                      P14_OpenDrain_Mode;
+ 198                  } else if (mode == OUTPUT)
+ 199                      P14_PushPull_Mode;
+ 200                  } else if (pin == 15) {
+ 201                  if (mode == INPUT) {
+ 202                      P15_OpenDrain_Mode;
+ 203                  } else if (mode == OUTPUT)
+ 204                      P15_PushPull_Mode;
+ 205                  } else if (pin == 16) {
+ 206                  if (mode == INPUT) {
+ 207                      P16_OpenDrain_Mode;
+ 208                  } else if (mode == OUTPUT)
+ 209                      P16_PushPull_Mode;
+ 210                  } else if (pin == 17) {
+ 211                  if (mode == INPUT) {
+ 212                      P17_OpenDrain_Mode;
+ 213                  } else if (mode == OUTPUT)
+ 214                      P17_PushPull_Mode;
+ 215                  }
+ 216          }
+ 217          
+ 218          
+ 219          bit digitalRead(uint8_t pin) {
+ 220              if (pin == 0) {
+ 221                  return P00;
+ 222              } else if (pin == 1) {
+ 223                  return P01;
+ 224              } else if (pin == 2) {
+ 225                  return P02;
+ 226              } else if (pin == 3) {
+ 227                  return P03;
+ 228              } else if (pin == 4) {
+ 229                  return P04;
+ 230              } else if (pin == 5) {
+ 231                  return P05;
+ 232              } else if (pin == 6) {
+ 233                  return P06;
+ 234              } else if (pin == 7) {
+ 235                  return P07;
+ 236              } else if (pin == 10) {
+ 237                  return P10;
+ 238              } else if (pin == 11) {
+ 239                  return P11;
+ 240              } else if (pin == 12) {
+C51 COMPILER V9.60.0.0   AVR                                                               01/12/2024 10:34:36 PAGE 5   
+
+ 241                  return P12;
+ 242              } else if (pin == 13) {
+ 243                  return P13;
+ 244              } else if (pin == 14) {
+ 245                  return P14;
+ 246              } else if (pin == 15) {
+ 247                  return P15;
+ 248              } else if (pin == 16) {
+ 249                  return P16;
+ 250              } else if (pin == 17) {
+ 251                  return P17;
+ 252              }
+ 253          }
+ 254          
+ 255          void digitalWrite(uint8_t pin, bit stt) {
+ 256              if (pin == 0) {
+ 257                  P00 = stt;
+ 258              } else if (pin == 1) {
+ 259                  P01 = stt;
+ 260              } else if (pin == 2) {
+ 261                  P02 = stt;
+ 262              } else if (pin == 3) {
+ 263                  P03 = stt;
+ 264              } else if (pin == 4) {
+ 265                  P04 = stt;
+ 266              } else if (pin == 5) {
+ 267                  P05 = stt;
+ 268              } else if (pin == 6) {
+ 269                  P06 = stt;
+ 270              } else if (pin == 7) {
+ 271                  P07 = stt;
+ 272              } else if (pin == 10) {
+ 273                  P10 = stt;
+ 274              } else if (pin == 11) {
+ 275                  P11 = stt;
+ 276              } else if (pin == 12) {
+ 277                  P12 = stt;
+ 278              } else if (pin == 13) {
+ 279                  P13 = stt;
+ 280              } else if (pin == 14) {
+ 281                  P14 = stt;
+ 282              } else if (pin == 15) {
+ 283                  P15 = stt;
+ 284              } else if (pin == 16) {
+ 285                  P16 = stt;
+ 286              } else if (pin == 17) {
+ 287                  P17 = stt;
+ 288              }
+ 289          }
+ 290          */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    565    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       2
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,128 @@
+C51 COMPILER V9.60.0.0   I2C_EEPROM                                                        01/12/2024 10:55:12 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE I2C_EEPROM
+OBJECT MODULE PLACED IN .\Output\I2C_EEPROM.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Code\I2C_EEPROM.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include;..\..\LI
+                    -B) DEFINE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\LST\I2C_EEPROM.lst) OBJECT(.\Output\I2C_EEPROM.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "SFR_Macro.h"
+   3          #include "Function_define.h"
+   4          #include "Common.h"
+   5          #include "Delay.h"
+   6          
+   7          #include "I2Ceeprom.h"
+   8          
+   9          
+  10          // ------------------------ MAIN -----------------------
+  11          
+  12          void main(void)
+  13          {
+  14   1          char a = 0x0;
+  15   1          char b = 0x0;
+  16   1          char c = 0x0;
+  17   1          char d = 0x0;
+  18   1      
+  19   1              uint16_t sum, sum1;
+  20   1      
+  21   1              P1M1 &= ~(1 << 2);
+  22   1          P1M2 |= (1 << 2);
+  23   1              P12 = 0;
+  24   1          InitialUART0_Timer3(115200);
+  25   1          TI = 1;     
+  26   1              
+  27   1              /* init */
+  28   1              I2C_Init();
+  29   1              
+  30   1              /* check address */
+  31   1              if (!I2C_CheckAddress(0xA0)) {
+  32   2                      while (1) {
+  33   3                              P12 = 1;
+  34   3                              Timer0_Delay1ms(500);
+  35   3                              P12 = 0;
+  36   3                              Timer0_Delay1ms(500);
+  37   3                  printf("Check Error\n");
+  38   3                      }
+  39   2              }
+  40   1              
+  41   1              Timer0_Delay1ms(1);
+  42   1              
+  43   1              /* write data */
+  44   1              if (!I2C_WriteInt(2, 1570)) {
+  45   2                      while (1) {
+  46   3                              P12 = 1;
+  47   3                              Timer0_Delay1ms(500);
+  48   3                              P12 = 0;
+  49   3                              Timer0_Delay1ms(500);
+  50   3                  printf("Write data Error\n");
+  51   3                      }
+  52   2              }
+  53   1              
+  54   1              Timer0_Delay1ms(1);
+C51 COMPILER V9.60.0.0   I2C_EEPROM                                                        01/12/2024 10:55:12 PAGE 2   
+
+  55   1      
+  56   1              if (!I2C_WriteInt(4, 2023)) {
+  57   2                      while (1) {
+  58   3                              P12 = 1;
+  59   3                              Timer0_Delay1ms(500);
+  60   3                              P12 = 0;
+  61   3                              Timer0_Delay1ms(500);
+  62   3                  printf("Write data Error\n");
+  63   3                      }
+  64   2              }
+  65   1              Timer0_Delay1ms(1);
+  66   1      
+  67   1              if (!I2C_Read(2, &a)) {
+  68   2                      while (1) {
+  69   3                              Timer0_Delay1ms(1000);
+  70   3                  printf("Read data Error\n");
+  71   3                      }
+  72   2              }
+  73   1              if (!I2C_Read(3, &b)) {
+  74   2                      while (1) {
+  75   3                              Timer0_Delay1ms(1000);
+  76   3                  printf("Read data Error\n");
+  77   3                      }
+  78   2              }
+  79   1              if (!I2C_ReadInt(4, &sum1)) {
+  80   2                      while (1) {
+  81   3                              Timer0_Delay1ms(1000);
+  82   3                  printf("Read data Error\n");
+  83   3                      }
+  84   2              }
+  85   1      
+  86   1      
+  87   1              sum = (a << 8) | b;
+  88   1              
+  89   1              Timer0_Delay1ms(500);
+  90   1          printf("Code test PASS\n");
+  91   1              
+  92   1      
+  93   1              while (1) {
+  94   2                      P12 = 1;
+  95   2                      Timer0_Delay1ms(500);
+  96   2                      P12 = 0;
+  97   2                      Timer0_Delay1ms(500);
+  98   2              printf("Data read: %d %d\n", sum, sum1);
+  99   2              }
+ 100   1      }
+ 101          
+ 102          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    398    ----
+   CONSTANT SIZE    =     82    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

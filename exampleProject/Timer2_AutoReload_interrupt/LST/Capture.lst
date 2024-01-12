@@ -1,0 +1,99 @@
+C51 COMPILER V9.60.0.0   CAPTURE                                                           01/03/2024 15:35:12 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE CAPTURE
+OBJECT MODULE PLACED IN .\Output\Capture.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Code\Capture.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include) DEFINE(FOS
+                    -C_160000) DEBUG OBJECTEXTEND PRINT(.\LST\Capture.lst) OBJECT(.\Output\Capture.obj)
+
+line level    source
+
+   1          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   2          /*                                                                                                        
+             - */
+   3          /* Copyright(c) 2017 Nuvoton Technology Corp. All rights reserved.                                        
+             - */
+   4          /*                                                                                                        
+             - */
+   5          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   6          
+   7          //********************************************************************************************************
+             -***
+   8          //  Nuvoton Technoledge Corp. 
+   9          //  Website: http://www.nuvoton.com
+  10          //  E-Mail : MicroC-8bit@nuvoton.com
+  11          //  Date   : Apr/21/2017
+  12          //********************************************************************************************************
+             -***
+  13          
+  14          //********************************************************************************************************
+             -***
+  15          //  File Function: N76E003 Timer2 Capture Mode demo code
+  16          //********************************************************************************************************
+             -***
+  17          
+  18          #include "N76E003.h"
+  19          #include "Common.h"
+  20          #include "Delay.h"
+  21          #include "SFR_Macro.h"
+  22          #include "Function_define.h"
+  23          
+  24          
+  25          
+  26          uint32_t millis = 0;
+  27          uint32_t led_time;
+  28          
+  29          void Timer2_ISR (void) interrupt 5
+  30          {
+  31   1              clr_TF2;                                             //Clear Timer2 Interrupt Flag
+  32   1              millis++;
+  33   1      }
+  34          
+  35          
+  36          
+  37          void main (void)
+  38          {
+  39   1          Set_All_GPIO_Quasi_Mode;
+  40   1              
+  41   1              TIMER2_DIV_128;
+  42   1              TIMER2_Auto_Reload_Delay_Mode;
+  43   1              
+  44   1              RCMP2L = TIMER_DIV128_VALUE_100ms;
+  45   1              RCMP2H = TIMER_DIV128_VALUE_100ms >> 8;
+C51 COMPILER V9.60.0.0   CAPTURE                                                           01/03/2024 15:35:12 PAGE 2   
+
+  46   1      
+  47   1              TH2 = 0;
+  48   1              TL2 = 0;
+  49   1              
+  50   1              set_TR2;
+  51   1              set_ET2;
+  52   1          set_EA;             // Enable global interrupts
+  53   1              
+  54   1              led_time = millis;
+  55   1      
+  56   1          while(1) {
+  57   2                      if ((uint32_t)(millis - led_time) >= 5) {
+  58   3                              led_time = millis;
+  59   3                              P12 = ~P12;
+  60   3                      }
+  61   2              }
+  62   1      }
+  63          
+  64          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    138    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

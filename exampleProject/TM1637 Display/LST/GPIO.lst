@@ -1,0 +1,107 @@
+C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:34:36 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE GPIO
+OBJECT MODULE PLACED IN .\Output\GPIO.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Code\GPIO.C OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include;..\..\LIB) DEF
+                    -INE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\LST\GPIO.lst) OBJECT(.\Output\GPIO.obj)
+
+line level    source
+
+   1          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   2          /*                                                                                                        
+             - */
+   3          /* Copyright(c) 2017 Nuvoton Technology Corp. All rights reserved.                                        
+             - */
+   4          /*                                                                                                        
+             - */
+   5          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   6          
+   7          //********************************************************************************************************
+             -***
+   8          //  Website: http://www.nuvoton.com
+   9          //  E-Mail : MicroC-8bit@nuvoton.com
+  10          //  Date   : Jan/21/2017
+  11          //********************************************************************************************************
+             -***
+  12          
+  13          //********************************************************************************************************
+             -***
+  14          
+  15          #include "N76E003.h"
+  16          #include "SFR_Macro.h"
+  17          #include "Function_define.h"
+  18          #include "Common.h"
+  19          #include "Delay.h"
+  20          
+  21          #include "avr.h"
+  22          #include "TM1637.h"
+  23          
+  24          
+  25          /*------------------------------------------------
+  26          The main C function.  Program execution starts
+  27          here after stack initialization.
+  28          ------------------------------------------------*/
+  29          
+  30          #define CLK 11
+  31          #define DIO 12
+  32          
+  33          TM1637 display;
+  34          
+  35          void showValue(int so)
+  36          {
+  37   1        int xdata d = so / 1000;
+  38   1        int xdata c = ((so / 100) % 10);
+  39   1        int xdata b = (so % 100) / 10;
+  40   1        int xdata a = so % 10;
+  41   1      
+  42   1        uint8_t datas[] = { 0xff, 0xff, 0xff, 0xff };
+  43   1        datas[0] = TM1637_encodeDigit(d);
+  44   1        datas[1] = TM1637_encodeDigit(c);
+  45   1        datas[2] = TM1637_encodeDigit(b);
+  46   1        datas[3] = TM1637_encodeDigit(a);
+C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:34:36 PAGE 2   
+
+  47   1        TM1637_setSegments(&display, datas);
+  48   1      }
+  49          
+  50          
+  51          // ----------------- DATA SLA --------------------------
+  52          uint8_t error1 = 0, error2 = 0, error3 = 0, error4 = 0;
+  53          uint8_t id = 0x1;
+  54          uint16_t counter = 1025;
+  55          
+  56          
+  57          
+  58          
+  59          void main (void) {              
+  60   1              TM1637_init(&display, CLK, DIO);
+  61   1              Timer0_Delay1ms(100);
+  62   1              TM1637_setBrightness(&display, 0x0f); // led 7 doan
+  63   1              showValue(counter);
+  64   1              
+  65   1              while(1)
+  66   1              {}
+  67   1      }
+  68          
+  69          
+  70          
+  71          // ------------------------ END of main ------------------------------------
+  72          
+  73          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    216    ----
+   CONSTANT SIZE    =      4    ----
+   XDATA SIZE       =   ----       8
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

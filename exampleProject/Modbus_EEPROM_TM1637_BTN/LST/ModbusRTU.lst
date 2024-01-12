@@ -1,0 +1,60 @@
+C51 COMPILER V9.60.0.0   MODBUSRTU                                                         01/12/2024 10:26:19 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MODBUSRTU
+OBJECT MODULE PLACED IN .\Output\ModbusRTU.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\..\LIB\ModbusRTU.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include;..\.
+                    -.\LIB) DEFINE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\LST\ModbusRTU.lst) OBJECT(.\Output\ModbusRTU.obj)
+
+line level    source
+
+   1          #include "N76E003.h"
+   2          #include "SFR_Macro.h"
+   3          #include "Function_define.h"
+   4          #include "Common.h"
+   5          #include "Delay.h"
+   6          
+   7          #include "ModbusRTU.h"
+   8          
+   9          void sendDataModbusRTU(uint8_t dataSend[], uint8_t sizeData) { 
+  10   1        uint8_t i;
+  11   1        uint16_t csum;
+  12   1        for (i = 0; i < sizeData; i++) {
+  13   2          Send_Data_To_UART0(dataSend[i]);
+  14   2          Timer0_Delay1ms(1);
+  15   2        }
+  16   1        csum = checkSumModbusRTU(dataSend, sizeData);
+  17   1        Send_Data_To_UART0(lowByte(csum));
+  18   1        Timer0_Delay1ms(1);
+  19   1        Send_Data_To_UART0(highByte(csum));
+  20   1        Timer0_Delay1ms(1);
+  21   1      }
+  22          
+  23          
+  24          uint16_t checkSumModbusRTU(uint8_t dataCheck[], uint8_t sizeData) {
+  25   1        uint16_t crc;
+  26   1        uint8_t i, j;
+  27   1        crc = 0xFFFF;
+  28   1        for (i = 0; i < sizeData; i++) {
+  29   2          crc ^= dataCheck[i];
+  30   2          for (j = 0; j < 8; j++) {
+  31   3            if (crc & 1) crc = (crc >> 1) ^ 0xA001;
+  32   3            else crc = (crc >> 1);
+  33   3          }
+  34   2        }
+  35   1        return crc;
+  36   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    197    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      13
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

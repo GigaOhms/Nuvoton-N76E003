@@ -1,0 +1,11 @@
+".\Output\GPIO.obj",
+".\Output\avr.obj",
+".\Output\I2Ceeprom.obj",
+".\Output\ModbusRTU.obj",
+".\Output\TM1637.obj",
+".\Output\Delay.obj",
+".\Output\Common.obj",
+".\Output\STARTUP.obj" 
+TO ".\Output\GPIO" 
+PRINT(".\LST\GPIO.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 
