@@ -8,7 +8,9 @@ Project using Nuvoton-N76E003 8051 and library TM1637 Display, I2C EEPROM AT24Cx
 ## `__ Some default command __ (một số lệnh mặc định)`
 ### GPIO
     P04_PushPull_Mode;                  // Set gpio P04 chế độ Push-pull
-    P11_Quasi_Mode ;                    // Set gpio P11 chế độ Quasi
+    P11_Quasi_Mode;                     // Set gpio P11 chế độ Quasi
+    P05_Input_Mode;                     // Set gpio P05 chế độ Input
+    P12_OpenDrain_Mode;                 // Set gpio P12 chế độ Open-Drain
 ### UART
     InitialUART0_Timer3(9600);          // khởi tạo uart 0 cho timer3 với tốc độ baud là 9600 (có thể đặt
     4800,115200....)
@@ -65,9 +67,9 @@ pinMode(12, OUTPUT);
 pinMode(4, OUTPUT);
 ```
 
-| Mode | Description |
+| Mode    | Description |
 | ------  | ----------- |
-| QUASI   | Config gpio quasi mode __ (đặt gpio làm đầu vào và ra, xuất mức logic cao-thấp, nhận tín hiệu input) |
+| QUASI   | Config gpio quasi mode __ (đặt gpio làm đầu vào và ra, xuất mức logic cao-thấp, nhận tín hiệu input)|
 | OUTPUT  | Config gpio push-pull mode __ (xuất mức logic cao-thấp)|
 | INPUT   | Config gpio input only mode __ (chỉ làm đầu vào) |
 | INPUT_OD| Config gpio input Open-drain mode __ (xuất mức logic thấp và nhận tín hiệu đầu vào) |
