@@ -58,16 +58,17 @@ Open project in keilC, go to `Options for Target` -> `tab C51`, add `..\..\LIB` 
 
 &nbsp;
 
-### `_ GPIO Setup _ (sử dụng thư viện gpio.h tự tạo)`
-USE library `gpio.h` __ Sử dụng thư viện gpio.h
+### `_ GPIO Setup _ (sử dụng thư viện "GPIO.h" tự tạo)`
+USE library `GPIO.h` __ Sử dụng thư viện GPIO.h
 ```c
-    #include "gpio.h"
+    #include "GPIO.h"
 ```
 
-- Config gpio `P12`, `P04` output mode:
+- Config gpio `P12` output, `P04` input, `P05` Open drain mode:
 ```c
 pinMode(12, OUTPUT);
-pinMode(4, OUTPUT);
+pinMode(4,  INPUT);
+pinMode(4,  INPUT_OD);
 ```
 
 | Mode    | Description |
@@ -79,7 +80,7 @@ pinMode(4, OUTPUT);
 
 &nbsp;
 
-### `_ digital-Write-Read _`
+### `_ digital-Write-Read _ đọc, ghi tín hiệu digital`
 
 - Set output gpio `P15` to `HIGH`, gpio `P05` to `LOW`
 ```c
@@ -93,6 +94,21 @@ digitalWrite(5, LOW);
 digitalRead(11);
 digitalRead(3);
 ```
+&nbsp;
+
+### `_ analogRead _ đọc tín hiệu ADC gpio`
+
+- N76E003 có 8 gpio có thể đọc tín hiệu ADC là các chân gpio `AINx` (x = 0 -> 7)
+
+- Đọc giá trị analog từ gpio P11
+```c
+pinMode(11, INPUT);
+
+while(1) {
+    adaValue = analogRead(11);
+}
+```
+
 &nbsp;
 
 ### `Tạo 2 hàm nhận dữ liệu Serial cơ bản như arduino`
