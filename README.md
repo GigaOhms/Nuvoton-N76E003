@@ -14,8 +14,8 @@ Project using Nuvoton-N76E003 8051 and library TM1637 Display, I2C EEPROM AT24Cx
 &nbsp;
 
 ## `__ Some default command __ (một số lệnh mặc định)`
-```c
 ### GPIO
+```c
 P04_PushPull_Mode;                  // Set gpio P04 chế độ Push-pull    - Output low-high
 P11_Quasi_Mode;                     // Set gpio P11 chế độ Quasi        - Output low-high, input
 P05_Input_Mode;                     // Set gpio P05 chế độ Input        - Input
@@ -33,14 +33,15 @@ printf("Hello world");              // Sử dụng như hàm printf trong C, g�
 ```
     
 ### Timer delay __ Các hàm delay được tạo sẵn
+
 ```c
-Timer0_Delay100us(UINT32 u32CNT);
-Timer0_Delay1ms(UINT32 u32CNT);
-Timer1_Delay10ms(UINT32 u32CNT);
-Timer2_Delay500us(UINT32 u32CNT);
-Timer3_Delay100ms(UINT32 u32CNT);
-Timer0_Delay40ms(UINT32 u32CNT);
-Timer3_Delay10us(UINT32 u32CNT);
+Timer0_Delay100us(u32CNT);
+Timer0_Delay1ms(u32CNT);
+Timer1_Delay10ms(u32CNT);
+Timer2_Delay500us(u32CNT);
+Timer3_Delay100ms(u32CNT);
+Timer0_Delay40ms(u32CNT);
+Timer3_Delay10us(u32CNT);
 ```
 
 
