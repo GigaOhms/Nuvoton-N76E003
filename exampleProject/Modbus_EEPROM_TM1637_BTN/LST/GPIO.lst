@@ -1,390 +1,226 @@
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:26:19 PAGE 1   
+C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 15:56:52 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE GPIO
 OBJECT MODULE PLACED IN .\Output\GPIO.obj
-COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Code\GPIO.C OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include;..\..\LIB) DEF
-                    -INE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\LST\GPIO.lst) OBJECT(.\Output\GPIO.obj)
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ..\..\LIB\GPIO.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include;..\..\LIB
+                    -) DEFINE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\LST\GPIO.lst) OBJECT(.\Output\GPIO.obj)
 
 line level    source
 
-   1          /*--------------------------------------------------------------------------------------------------------
-             --*/
-   2          /*                                                                                                        
-             - */
-   3          /* Copyright(c) 2017 Nuvoton Technology Corp. All rights reserved.                                        
-             - */
-   4          /*                                                                                                        
-             - */
-   5          /*--------------------------------------------------------------------------------------------------------
-             --*/
+   1          
+   2          #include "N76E003.h"
+   3          #include "SFR_Macro.h"
+   4          #include "Function_define.h"
+   5          #include "Common.h"
    6          
-   7          //********************************************************************************************************
-             -***
-   8          //  Website: http://www.nuvoton.com
-   9          //  E-Mail : MicroC-8bit@nuvoton.com
-  10          //  Date   : Jan/21/2017
-  11          //********************************************************************************************************
-             -***
-  12          
-  13          //********************************************************************************************************
-             -***
-  14          //  File Function: N76E003 GPIO demo code
-  15          //********************************************************************************************************
-             -***
-  16          #include "N76E003.h"
-  17          #include "SFR_Macro.h"
-  18          #include "Function_define.h"
-  19          #include "Common.h"
-  20          #include "Delay.h"
-  21          
-  22          #include "avr.h"
-  23          #include "TM1637.h"
-  24          #include "ModbusRTU.h"
-  25          #include "I2Ceeprom.h"
-  26          
-  27          
-  28          /*------------------------------------------------
-  29          The main C function.  Program execution starts
-  30          here after stack initialization.
-  31          ------------------------------------------------*/
-  32          
-  33          #define CLK 11
-  34          #define DIO 12
-  35          
-  36          TM1637 display;
-  37          
-  38          void showValue(int so)
-  39          {
-  40   1        int xdata d = so / 1000;
-  41   1        int xdata c = ((so / 100) % 10);
-  42   1        int xdata b = (so % 100) / 10;
-  43   1        int xdata a = so % 10;
-  44   1      
-  45   1        uint8_t datas[] = { 0xff, 0xff, 0xff, 0xff };
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:26:19 PAGE 2   
+   7          #include "GPIO.h"
+   8          
+   9          void pinMode(uint8_t pin, uint8_t mode) {
+  10   1          bit registerPin = 0;
+  11   1      
+  12   1          if (pin == 8 || pin == 9 || mode > 0x3)
+  13   1              return;
+  14   1      
+  15   1          if (pin == 30) {
+  16   2              if (mode == QUASI) {
+  17   3                  P3M1 &= ~(1 << 0);
+  18   3                  P3M2 &= ~(1 << 0);
+  19   3              } else if (mode == OUTPUT) {
+  20   3                  P3M1 &= ~(1 << 0);
+  21   3                  P3M2 |= (1 << 0);
+  22   3              } else if (mode == INPUT) {
+  23   3                  P3M1 |= (1 << 0);
+  24   3                  P3M2 &= ~(1 << 0);
+  25   3              } else if (mode == INPUT_OD) {
+  26   3                  P3M1 |= (1 << 0);
+  27   3                  P3M2 |= (1 << 0);
+  28   3              }
+  29   2          }
+  30   1      
+  31   1              if (pin >= 18)
+  32   1              return;
+  33   1          
+  34   1          registerPin = (pin >= 10) ? 1 : 0;  // P1.x or P0.x
+  35   1          pin %= 10;
+  36   1          
+  37   1              
+  38   1          if (mode == QUASI) {
+  39   2              if (registerPin == 1) {
+  40   3                  P1M1 &= ~(1 << pin);
+  41   3                  P1M2 &= ~(1 << pin);
+  42   3              } else {
+  43   3                  P0M1 &= ~(1 << pin);
+  44   3                  P0M2 &= ~(1 << pin);
+  45   3              }
+  46   2          } else if (mode == OUTPUT) {
+  47   2              if (registerPin == 1) {
+  48   3                  P1M1 &= ~(1 << pin);
+  49   3                  P1M2 |= (1 << pin);
+  50   3              } else {
+  51   3                  P0M1 &= ~(1 << pin);
+  52   3                  P0M2 |= (1 << pin);
+  53   3              }
+  54   2          } else if (mode == INPUT) {
+C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 15:56:52 PAGE 2   
 
-  46   1        datas[0] = TM1637_encodeDigit(d);
-  47   1        datas[1] = TM1637_encodeDigit(c);
-  48   1        datas[2] = TM1637_encodeDigit(b);
-  49   1        datas[3] = TM1637_encodeDigit(a);
-  50   1        TM1637_setSegments(&display, datas);
-  51   1      }
-  52          
-  53          
-  54          // ----------------- DATA SLA --------------------------
-  55          uint8_t error1 = 0, error2 = 0, error3 = 0, error4 = 0;
-  56          uint8_t id = 0x1;
-  57          uint16_t counter = 0;
-  58          
-  59          
-  60          // -------------- SERIAL MODBUS VARIABLE -------------------
-  61          #define sumSize 15U             // them 2 byte checkSum la 17
-  62          #define sizeData 14U
-  63          
-  64          uint8_t xdata dataSend[15];     // 3 byte resigter and u16data[]
-  65          
-  66          bit checkID = 0;
-  67          bit checkSend = 0;
-  68          bit checkWrite = 0;
-  69          bit checkSerial = 0;
-  70          
-  71          uint8_t xdata reciveCounter = 0;
-  72          uint8_t xdata reciveData[8];
-  73          uint32_t xdata serialTime = 0;
-  74          
-  75          #define serialTimeout 30UL
-  76          
-  77          uint8_t serial_available() {
-  78   1              return RI ? 1 : 0;
-  79   1      }
-  80          
-  81          uint8_t serial_read() {
-  82   1              uint8_t c = SBUF;
-  83   1              RI = 0;
-  84   1              return c;
-  85   1      }
-  86          
-  87          
-  88          // -------------- GPIO SETUP -----------------------
-  89          #define BT_UP 4
-  90          #define BT_DW 10
-  91          #define BT_E1 0
-  92          #define BT_E2 3
-  93          #define BT_E3 1
-  94          #define BT_E4 2
-  95          
-  96          bit S_BT_UP = 0;
-  97          bit S_BT_DW = 0;
-  98          bit S_BT_E1 = 0;
-  99          bit S_BT_E2 = 0;
- 100          bit S_BT_E3 = 0;
- 101          bit S_BT_E4 = 0;
- 102          
- 103          
- 104          
- 105          void showError(uint8_t error, uint8_t value) {
- 106   1        uint8_t datas[] = { 0, 0, 0, 0 };
- 107   1        datas[0] = TM1637_encodeDigit(14);
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:26:19 PAGE 3   
+  55   2              if (registerPin == 1) {
+  56   3                  P1M1 |= (1 << pin);
+  57   3                  P1M2 &= ~(1 << pin);
+  58   3              } else {
+  59   3                  P0M1 |= (1 << pin);
+  60   3                  P0M2 &= ~(1 << pin);
+  61   3              }
+  62   2          } else if (mode == INPUT_OD) {
+  63   2              if (registerPin == 1) {
+  64   3                  P1M1 |= (1 << pin);
+  65   3                  P1M2 |= (1 << pin);
+  66   3              } else {
+  67   3                  P0M1 |= (1 << pin);
+  68   3                  P0M2 |= (1 << pin);
+  69   3              }
+  70   2          }
+  71   1      }
+  72          
+  73          
+  74          bit digitalRead(uint8_t pin) {
+  75   1          if (pin == 0) {
+  76   2              return P00;
+  77   2          } else if (pin == 1) {
+  78   2              return P01;
+  79   2          } else if (pin == 2) {
+  80   2              return P02;
+  81   2          } else if (pin == 3) {
+  82   2              return P03;
+  83   2          } else if (pin == 4) {
+  84   2              return P04;
+  85   2          } else if (pin == 5) {
+  86   2              return P05;
+  87   2          } else if (pin == 6) {
+  88   2              return P06;
+  89   2          } else if (pin == 7) {
+  90   2              return P07;
+  91   2          } else if (pin == 10) {
+  92   2              return P10;
+  93   2          } else if (pin == 11) {
+  94   2              return P11;
+  95   2          } else if (pin == 12) {
+  96   2              return P12;
+  97   2          } else if (pin == 13) {
+  98   2              return P13;
+  99   2          } else if (pin == 14) {
+ 100   2              return P14;
+ 101   2          } else if (pin == 15) {
+ 102   2              return P15;
+ 103   2          } else if (pin == 16) {
+ 104   2              return P16;
+ 105   2          } else if (pin == 17) {
+ 106   2              return P17;
+ 107   2          } else return 0;
+ 108   1      }
+ 109          
+ 110          void digitalWrite(uint8_t pin, bit stt) {
+ 111   1          if (pin == 0) {
+ 112   2              P00 = stt;
+ 113   2          } else if (pin == 1) {
+ 114   2              P01 = stt;
+ 115   2          } else if (pin == 2) {
+ 116   2              P02 = stt;
+C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 15:56:52 PAGE 3   
 
- 108   1        datas[1] = TM1637_encodeDigit(error);
- 109   1        datas[2] = 0x00;                      // 0x40 is '-'                  // 0x00 is ' '
- 110   1        datas[3] = TM1637_encodeDigit(value);
- 111   1        TM1637_setSegments(&display, datas);
- 112   1        Timer0_Delay1ms(500);
- 113   1      }
- 114          
- 115          void dataUpdate() {
- 116   1              dataSend[4] = lowByte(error1);
- 117   1              dataSend[6] = lowByte(error2);
- 118   1              dataSend[8] = lowByte(error3);
- 119   1              dataSend[10] = lowByte(error4);
- 120   1              dataSend[11] = highByte(counter);
- 121   1              dataSend[12] = lowByte(counter);
- 122   1              dataSend[14] = lowByte(id);
- 123   1      }
- 124          
- 125          
- 126          volatile uint32_t xdata millis = 0;
- 127          volatile uint32_t xdata led_time;
- 128          
- 129          void Timer2_ISR (void) interrupt 5
- 130          {
- 131   1              clr_TF2;                                             //Clear Timer2 Interrupt Flag
- 132   1              millis++;
- 133   1      }
- 134          
- 135          
- 136          
- 137          // I2C 
- 138          #define addrE1  0
- 139          #define addrE2  1
- 140          #define addrE3  2
- 141          #define addrE4  3
- 142          #define addrCNT 4
- 143          #define addrID  6
- 144          
+ 117   2          } else if (pin == 3) {
+ 118   2              P03 = stt;
+ 119   2          } else if (pin == 4) {
+ 120   2              P04 = stt;
+ 121   2          } else if (pin == 5) {
+ 122   2              P05 = stt;
+ 123   2          } else if (pin == 6) {
+ 124   2              P06 = stt;
+ 125   2          } else if (pin == 7) {
+ 126   2              P07 = stt;
+ 127   2          } else if (pin == 10) {
+ 128   2              P10 = stt;
+ 129   2          } else if (pin == 11) {
+ 130   2              P11 = stt;
+ 131   2          } else if (pin == 12) {
+ 132   2              P12 = stt;
+ 133   2          } else if (pin == 13) {
+ 134   2              P13 = stt;
+ 135   2          } else if (pin == 14) {
+ 136   2              P14 = stt;
+ 137   2          } else if (pin == 15) {
+ 138   2              P15 = stt;
+ 139   2          } else if (pin == 16) {
+ 140   2              P16 = stt;
+ 141   2          } else if (pin == 17) {
+ 142   2              P17 = stt;
+ 143   2          }
+ 144   1      }
  145          
- 146          
- 147          void main (void) {              
- 148   1              InitialUART0_Timer3(9600);      
- 149   1              I2C_Init();
- 150   1              
- 151   1              /*
- 152   1              if (I2C_Write(addrE1, 1));
- 153   1              Timer0_Delay1ms(1);
- 154   1              if (I2C_Write(addrE2, 1));
- 155   1              Timer0_Delay1ms(1);
- 156   1              if (I2C_Write(addrE3, 1));
- 157   1              Timer0_Delay1ms(1);
- 158   1              if (I2C_Write(addrE4, 1));
- 159   1              Timer0_Delay1ms(1);
- 160   1              if (I2C_Write(addrID, 1));
- 161   1              Timer0_Delay1ms(1);
- 162   1              if (I2C_WriteInt(addrCNT, 99));
- 163   1              Timer0_Delay1ms(1);
- 164   1              */
- 165   1              
+ 146          uint16_t ADC_Read(uint8_t u8Channel)
+ 147          {
+ 148   1              uint16_t value = 0x0000;
+ 149   1              
+ 150   1              ADCCON1 |= (1 << 0);
+ 151   1      
+ 152   1              // clock
+ 153   1              ADCCON1 &= ~(0x30);
+ 154   1              ADCCON1 |= 0x00;
+ 155   1              
+ 156   1              // set channel
+ 157   1              ADCCON0 &= ~(0x0F);
+ 158   1              ADCCON0 |= (u8Channel & 0x07);
+ 159   1              AINDIDS = 0x00;
+ 160   1              AINDIDS |= (1 << u8Channel);
+ 161   1              
+ 162   1              // clear flag
+ 163   1              ADCF = 0;
+ 164   1              //start convert
+ 165   1              ADCS = 1;
  166   1              
- 167   1              
- 168   1              if (I2C_Read(addrE1, &error1));
- 169   1              if (I2C_Read(addrE2, &error2));
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:26:19 PAGE 4   
+ 167   1              while(ADCF == 0);
+ 168   1              value = (ADCRH << 4) | ADCRL;
+ 169   1              
+ 170   1              // disable ADC
+ 171   1              ADCCON1 &= ~(1 << 0);
+ 172   1      
+ 173   1              
+ 174   1              return value;
+ 175   1      }
+ 176          
+ 177          
+ 178          uint16_t analogRead(uint8_t pin) {
+C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 15:56:52 PAGE 4   
 
- 170   1              if (I2C_Read(addrE3, &error3));
- 171   1              if (I2C_Read(addrE4, &error4));
- 172   1              if (I2C_Read(addrID, &id));
- 173   1              if (I2C_ReadInt(addrCNT, &counter));
- 174   1      
- 175   1              Send_Data_To_UART0(id);
- 176   1              
- 177   1              // --------------- ISR timer2 1kHz -----------------------
- 178   1              TIMER2_DIV_4;
- 179   1              TIMER2_Auto_Reload_Delay_Mode;
- 180   1              RCMP2L = TIMER_DIV4_VALUE_1ms;
- 181   1              RCMP2H = TIMER_DIV4_VALUE_1ms >> 8;
- 182   1              TH2 = 0;
- 183   1              TL2 = 0;
- 184   1              set_TR2;
- 185   1              set_ET2;
- 186   1          set_EA;             // Enable global interrupts
- 187   1              
- 188   1              // ------------------- GPIO Config ------------------------
- 189   1              pinMode(BT_UP, INPUT);
- 190   1              pinMode(BT_DW, INPUT);
- 191   1              pinMode(BT_E1, INPUT);
- 192   1              pinMode(BT_E2, INPUT);
- 193   1              pinMode(BT_E3, INPUT);
- 194   1              pinMode(BT_E4, INPUT);
- 195   1              
- 196   1              TM1637_init(&display, CLK, DIO);
- 197   1              Timer0_Delay1ms(100);
- 198   1              
- 199   1              TM1637_setBrightness(&display, 0x0f); // led 7 doan
- 200   1              showValue(counter);
- 201   1              
- 202   1              dataSend[0] = lowByte(id);
- 203   1              dataSend[1] = 0x3;              // value READ HOLDING REGISTERS
- 204   1              dataSend[2] = 0xc;              // size of Data
- 205   1              dataSend[3] = 0x0;              //highByte(error1);
- 206   1              dataSend[5] = 0x0;              //highByte(error2);
- 207   1              dataSend[7] = 0x0;              //highByte(error3);
- 208   1              dataSend[9] = 0x0;              //highByte(error4);
- 209   1              dataSend[13] = 0x0;             //highByte(id);
- 210   1      
- 211   1              dataUpdate();
- 212   1              led_time = millis;
- 213   1              serialTime = millis;
- 214   1              
- 215   1              while(1)
- 216   1              {       
- 217   2                      if (digitalRead(BT_UP) == 0 && S_BT_UP == 0) {
- 218   3                              S_BT_UP = 1;
- 219   3                              counter = (counter >= 9999) ? counter : counter + 1;
- 220   3                              dataUpdate();
- 221   3                              showValue(counter);
- 222   3                              Timer0_Delay1ms(200);
- 223   3                              if (I2C_WriteInt(addrCNT, counter))
- 224   3                                      Timer0_Delay1ms(1);
- 225   3                      } else if (digitalRead(BT_UP) == 1) S_BT_UP = 0;
- 226   2                      
- 227   2                      if (digitalRead(BT_DW) == 0 && S_BT_DW == 0) {
- 228   3                              S_BT_DW = 1;
- 229   3                              counter = (counter == 0) ? counter : counter - 1;
- 230   3                              dataUpdate();
- 231   3                              showValue(counter);
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:26:19 PAGE 5   
-
- 232   3                              Timer0_Delay1ms(200);
- 233   3                              if (I2C_WriteInt(addrCNT, counter))
- 234   3                                      Timer0_Delay1ms(1);
- 235   3                      } else if (digitalRead(BT_DW) == 1) S_BT_DW = 0;
- 236   2                      
- 237   2                      if (digitalRead(BT_E1) == 0 && S_BT_E1 == 0) {
- 238   3                              S_BT_E1 = 1;
- 239   3                              error1 = (error1 == 1) ? 0 : 1;
- 240   3                              dataUpdate();
- 241   3                              showError(1, error1);
- 242   3                              if (I2C_Write(addrE1, error1))
- 243   3                                      Timer0_Delay1ms(1);
- 244   3                              Timer0_Delay1ms(200);
- 245   3                              showValue(counter);
- 246   3                      } else if (digitalRead(BT_E1) == 1) S_BT_E1 = 0;
- 247   2      
- 248   2                      if (digitalRead(BT_E2) == 0 && S_BT_E2 == 0) {
- 249   3                              S_BT_E2 = 1;
- 250   3                              error2 = (error2 == 1) ? 0 : 1;
- 251   3                              dataUpdate();
- 252   3                              showError(2, error2);
- 253   3                              if (I2C_Write(addrE2, error2))
- 254   3                                      Timer0_Delay1ms(1);
- 255   3                              Timer0_Delay1ms(200);
- 256   3                              showValue(counter);
- 257   3                      } else if (digitalRead(BT_E2) == 1) S_BT_E2 = 0;
- 258   2                      
- 259   2                      if (digitalRead(BT_E3) == 0 && S_BT_E3 == 0) {
- 260   3                              S_BT_E3 = 1;
- 261   3                              error3 = (error3 == 1) ? 0 : 1;
- 262   3                              dataUpdate();
- 263   3                              showError(3, error3);
- 264   3                              if (I2C_Write(addrE3, error3))
- 265   3                                      Timer0_Delay1ms(1);
- 266   3                              Timer0_Delay1ms(200);
- 267   3                              showValue(counter);
- 268   3                      } else if (digitalRead(BT_E3) == 1) S_BT_E3 = 0;
- 269   2                      
- 270   2                      if (digitalRead(BT_E4) == 0 && S_BT_E4 == 0) {
- 271   3                              S_BT_E4 = 1;
- 272   3                              error4 = (error4 == 1) ? 0 : 1;
- 273   3                              dataUpdate();
- 274   3                              showError(4, error4);
- 275   3                              Timer0_Delay1ms(200);
- 276   3                              showValue(counter);
- 277   3                              if (I2C_Write(addrE4, error4))
- 278   3                                      Timer0_Delay1ms(1);
- 279   3                      } else if (digitalRead(BT_E4) == 1) S_BT_E4 = 0;
- 280   2                      
- 281   2                      
- 282   2                      if ((uint32_t)(millis - led_time) >= 2000) {
- 283   3                              led_time = millis;
- 284   3                              //sendDataModbusRTU(dataSend, sumSize);
- 285   3                              P12 = ~P12;
- 286   3                      }
- 287   2                      
- 288   2                      if (serial_available()) {
- 289   3                              uint8_t c = serial_read();
- 290   3                              if ((uint32_t)(millis - serialTime) > serialTimeout) {
- 291   4                                      serialTime = millis;
- 292   4                                      reciveCounter = 0;
- 293   4                              }
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:26:19 PAGE 6   
-
- 294   3                              reciveData[reciveCounter] = c;
- 295   3                              reciveCounter++;
- 296   3                              if (reciveCounter >= 8) {
- 297   4                                      reciveCounter = 0;
- 298   4                                      if (reciveData[0] == id) {
- 299   5                                              if (reciveData[1] == 0x3) {                             // 0x3 - READ HOLDING REGISTERS 
- 300   6                                                      //dataUpdate();
- 301   6                                                      sendDataModbusRTU(dataSend, sumSize);
- 302   6                                              } else if (reciveData[1] == 0x6) {              // 0x6 - Single Holding Register
- 303   6                                                      if (reciveData[3] == 0) {
- 304   7                                                              error1 = reciveData[5];
- 305   7                                                              showError(1, error1);
- 306   7                                                              if (I2C_Write(addrE1, error1))
- 307   7                                                                      Timer0_Delay1ms(1);
- 308   7                                                      } else if (reciveData[3] == 1) {
- 309   7                                                              error2 = reciveData[5];
- 310   7                                                              showError(2, error2);
- 311   7                                                              if (I2C_Write(addrE2, error2))
- 312   7                                                                      Timer0_Delay1ms(1);
- 313   7                                                      } else if (reciveData[3] == 2) {
- 314   7                                                              error3 = reciveData[5];
- 315   7                                                              showError(3, error3);
- 316   7                                                              if (I2C_Write(addrE3, error3))
- 317   7                                                                      Timer0_Delay1ms(1);
- 318   7                                                      } else if (reciveData[3] == 3) {
- 319   7                                                              error4 = reciveData[5];
- 320   7                                                              showError(4, error4);
- 321   7                                                              if (I2C_Write(addrE4, error4))
- 322   7                                                                      Timer0_Delay1ms(1);
- 323   7                                                      } else if (reciveData[3] == 4) {
- 324   7                                                              counter = (reciveData[4] << 8) ^ reciveData[5];
- 325   7                                                      } else if (reciveData[3] == 5) {
- 326   7                                                              id = reciveData[5];
- 327   7                                                              dataSend[0] = lowByte(id);
- 328   7                                                              if (I2C_Write(addrID, id))
- 329   7                                                                      Timer0_Delay1ms(1);
- 330   7                                                      }
- 331   6                                                      dataUpdate();
- 332   6                                                      showValue(counter);
- 333   6                                                      if (I2C_WriteInt(addrCNT, counter))
- 334   6                                                              Timer0_Delay1ms(1);
- 335   6                                              }
- 336   5                                      }
- 337   4                              }
- 338   3                      }
- 339   2              }
- 340   1      }
- 341          
- 342          
- 343          
- 344          // ------------------------ END of main ------------------------------------
- 345          
- 346          
+ 179   1          if (pin == 17) {
+ 180   2              return ADC_Read(0);
+ 181   2          } else if (pin == 30) {
+ 182   2              return ADC_Read(1);
+ 183   2          } else if (pin == 7) {
+ 184   2              return ADC_Read(2);
+ 185   2          } else if (pin == 6) {
+ 186   2              return ADC_Read(3);
+ 187   2          } else if (pin == 5) {
+ 188   2              return ADC_Read(4);
+ 189   2          } else if (pin == 4) {
+ 190   2              return ADC_Read(5);
+ 191   2          } else if (pin == 3) {
+ 192   2              return ADC_Read(6);
+ 193   2          } else if (pin == 11) {
+ 194   2              return ADC_Read(7);
+ 195   2          }
+ 196   1          return 0;
+ 197   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1617    ----
-   CONSTANT SIZE    =      8    ----
-   XDATA SIZE       =     36       8
+   CODE SIZE        =    757    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     10      11
+   DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 10:26:19 PAGE 7   
-
-   BIT SIZE         =     10    ----
+   BIT SIZE         =   ----       2
 END OF MODULE INFORMATION.
 
 

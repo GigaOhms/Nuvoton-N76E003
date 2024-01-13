@@ -377,19 +377,9 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>GPIO.C</FileName>
+              <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Code\GPIO.C</FilePath>
-            </File>
-            <File>
-              <FileName>avr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\LIB\avr.c</FilePath>
-            </File>
-            <File>
-              <FileName>avr.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\LIB\avr.h</FilePath>
+              <FilePath>.\Code\main.c</FilePath>
             </File>
             <File>
               <FileName>TM1637.c</FileName>
@@ -400,6 +390,16 @@
               <FileName>TM1637.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\LIB\TM1637.h</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\LIB\GPIO.h</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\LIB\GPIO.c</FilePath>
             </File>
           </Files>
         </Group>

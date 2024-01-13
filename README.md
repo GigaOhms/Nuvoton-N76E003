@@ -20,6 +20,11 @@ P04_PushPull_Mode;                  // Set gpio P04 chế độ Push-pull    - O
 P11_Quasi_Mode;                     // Set gpio P11 chế độ Quasi        - Output low-high, input
 P05_Input_Mode;                     // Set gpio P05 chế độ Input        - Input
 P12_OpenDrain_Mode;                 // Set gpio P12 chế độ Open-Drain   - Output low, input
+
+P04 = 1                             // Set gpio P04 lên cao (mức 1)
+P11 = 0                             // Set gpio P04 mức thấp (mức 0)
+value = P05;                        // Đọc giá trị input ở gpio P05 (low - high)
+
 ```
 
 ### UART
@@ -53,10 +58,10 @@ Open project in keilC, go to `Options for Target` -> `tab C51`, add `..\..\LIB` 
 
 &nbsp;
 
-### `_ GPIO Setup _ (sử dụng thư viện avr.h tự tạo)`
-USE library `avr.h` __ Sử dụng thư viện avr.h
+### `_ GPIO Setup _ (sử dụng thư viện gpio.h tự tạo)`
+USE library `gpio.h` __ Sử dụng thư viện gpio.h
 ```c
-    #include "avr.h"
+    #include "gpio.h"
 ```
 
 - Config gpio `P12`, `P04` output mode:

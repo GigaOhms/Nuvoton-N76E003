@@ -1,0 +1,8 @@
+".\Output\ADC.obj",
+".\Output\GPIO.obj",
+".\Output\Common.obj",
+".\Output\Delay.obj",
+".\Output\STARTUP.obj" 
+TO ".\Output\ADC_Multi" 
+PRINT(".\LST\ADC_Multi.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

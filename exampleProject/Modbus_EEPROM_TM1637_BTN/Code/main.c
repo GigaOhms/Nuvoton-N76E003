@@ -1,25 +1,17 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                                                                                         */
-/* Copyright(c) 2017 Nuvoton Technology Corp. All rights reserved.                                         */
+/* Project anh Trong	- VIETTIEN																		   */
 /*                                                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
 
-//***********************************************************************************************************
-//  Website: http://www.nuvoton.com
-//  E-Mail : MicroC-8bit@nuvoton.com
-//  Date   : Jan/21/2017
-//***********************************************************************************************************
 
-//***********************************************************************************************************
-//  File Function: N76E003 GPIO demo code
-//***********************************************************************************************************
 #include "N76E003.h"
 #include "SFR_Macro.h"
 #include "Function_define.h"
 #include "Common.h"
 #include "Delay.h"
 
-#include "avr.h"
+#include "GPIO.h"
 #include "TM1637.h"
 #include "ModbusRTU.h"
 #include "I2Ceeprom.h"
@@ -54,7 +46,7 @@ void showValue(int so)
 // ----------------- DATA SLA --------------------------
 uint8_t error1 = 0, error2 = 0, error3 = 0, error4 = 0;
 uint8_t id = 0x1;
-uint16_t counter = 0;
+uint16_t counter = 1215;
 
 
 // -------------- SERIAL MODBUS VARIABLE -------------------
@@ -112,15 +104,18 @@ void showError(uint8_t error, uint8_t value) {
   Timer0_Delay1ms(500);
 }
 
-void dataUpdate() {
-	dataSend[4] = lowByte(error1);
-	dataSend[6] = lowByte(error2);
-	dataSend[8] = lowByte(error3);
-	dataSend[10] = lowByte(error4);
-	dataSend[11] = highByte(counter);
-	dataSend[12] = lowByte(counter);
-	dataSend[14] = lowByte(id);
+
+void dataUpdate(uint8_t * pDataSend) {
+	pDataSend[0] = LOBYTE(id);
+	pDataSend[4] = LOBYTE(error1);
+	pDataSend[6] = LOBYTE(error2);
+	pDataSend[8] = LOBYTE(error3);
+	pDataSend[10] = LOBYTE(error4);
+	pDataSend[11] = HIBYTE(counter);
+	pDataSend[12] = LOBYTE(counter);
+	pDataSend[14] = LOBYTE(id);
 }
+
 
 
 volatile uint32_t xdata millis = 0;
@@ -199,7 +194,6 @@ void main (void) {
 	TM1637_setBrightness(&display, 0x0f); // led 7 doan
 	showValue(counter);
 	
-	dataSend[0] = lowByte(id);
 	dataSend[1] = 0x3;		// value READ HOLDING REGISTERS
 	dataSend[2] = 0xc;		// size of Data
 	dataSend[3] = 0x0;		//highByte(error1);
@@ -208,16 +202,16 @@ void main (void) {
 	dataSend[9] = 0x0;		//highByte(error4);
 	dataSend[13] = 0x0;		//highByte(id);
 
-	dataUpdate();
+	dataUpdate(dataSend);
 	led_time = millis;
 	serialTime = millis;
-	
+
 	while(1)
 	{	
 		if (digitalRead(BT_UP) == 0 && S_BT_UP == 0) {
 			S_BT_UP = 1;
 			counter = (counter >= 9999) ? counter : counter + 1;
-			dataUpdate();
+			dataUpdate(dataSend);
 			showValue(counter);
 			Timer0_Delay1ms(200);
 			if (I2C_WriteInt(addrCNT, counter))
@@ -227,7 +221,7 @@ void main (void) {
 		if (digitalRead(BT_DW) == 0 && S_BT_DW == 0) {
 			S_BT_DW = 1;
 			counter = (counter == 0) ? counter : counter - 1;
-			dataUpdate();
+			dataUpdate(dataSend);
 			showValue(counter);
 			Timer0_Delay1ms(200);
 			if (I2C_WriteInt(addrCNT, counter))
@@ -237,7 +231,7 @@ void main (void) {
 		if (digitalRead(BT_E1) == 0 && S_BT_E1 == 0) {
 			S_BT_E1 = 1;
 			error1 = (error1 == 1) ? 0 : 1;
-			dataUpdate();
+			dataUpdate(dataSend);
 			showError(1, error1);
 			if (I2C_Write(addrE1, error1))
 				Timer0_Delay1ms(1);
@@ -248,7 +242,7 @@ void main (void) {
 		if (digitalRead(BT_E2) == 0 && S_BT_E2 == 0) {
 			S_BT_E2 = 1;
 			error2 = (error2 == 1) ? 0 : 1;
-			dataUpdate();
+			dataUpdate(dataSend);
 			showError(2, error2);
 			if (I2C_Write(addrE2, error2))
 				Timer0_Delay1ms(1);
@@ -259,7 +253,7 @@ void main (void) {
 		if (digitalRead(BT_E3) == 0 && S_BT_E3 == 0) {
 			S_BT_E3 = 1;
 			error3 = (error3 == 1) ? 0 : 1;
-			dataUpdate();
+			dataUpdate(dataSend);
 			showError(3, error3);
 			if (I2C_Write(addrE3, error3))
 				Timer0_Delay1ms(1);
@@ -270,7 +264,7 @@ void main (void) {
 		if (digitalRead(BT_E4) == 0 && S_BT_E4 == 0) {
 			S_BT_E4 = 1;
 			error4 = (error4 == 1) ? 0 : 1;
-			dataUpdate();
+			dataUpdate(dataSend);
 			showError(4, error4);
 			Timer0_Delay1ms(200);
 			showValue(counter);
@@ -281,7 +275,6 @@ void main (void) {
 		
 		if ((uint32_t)(millis - led_time) >= 2000) {
 			led_time = millis;
-			//sendDataModbusRTU(dataSend, sumSize);
 			P12 = ~P12;
 		}
 		
@@ -297,7 +290,7 @@ void main (void) {
 				reciveCounter = 0;
 				if (reciveData[0] == id) {
 					if (reciveData[1] == 0x3) {				// 0x3 - READ HOLDING REGISTERS 
-						//dataUpdate();
+						dataUpdate(dataSend);
 						sendDataModbusRTU(dataSend, sumSize);
 					} else if (reciveData[1] == 0x6) {		// 0x6 - Single Holding Register
 						if (reciveData[3] == 0) {
@@ -324,11 +317,10 @@ void main (void) {
 							counter = (reciveData[4] << 8) ^ reciveData[5];
 						} else if (reciveData[3] == 5) {
 							id = reciveData[5];
-							dataSend[0] = lowByte(id);
 							if (I2C_Write(addrID, id))
 								Timer0_Delay1ms(1);
 						}
-						dataUpdate();
+						dataUpdate(dataSend);
 						showValue(counter);
 						if (I2C_WriteInt(addrCNT, counter))
 							Timer0_Delay1ms(1);
@@ -342,5 +334,3 @@ void main (void) {
 
 
 // ------------------------ END of main ------------------------------------
-
-

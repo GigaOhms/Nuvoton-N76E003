@@ -1,6 +1,6 @@
-".\Output\GPIO.obj",
-".\Output\avr.obj",
+".\Output\main.obj",
 ".\Output\TM1637.obj",
+".\Output\GPIO.obj",
 ".\Output\Delay.obj",
 ".\Output\Common.obj",
 ".\Output\STARTUP.obj" 

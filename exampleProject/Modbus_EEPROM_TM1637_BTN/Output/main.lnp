@@ -1,0 +1,11 @@
+".\Output\main.obj",
+".\Output\I2Ceeprom.obj",
+".\Output\ModbusRTU.obj",
+".\Output\TM1637.obj",
+".\Output\GPIO.obj",
+".\Output\Delay.obj",
+".\Output\Common.obj",
+".\Output\STARTUP.obj" 
+TO ".\Output\main" 
+PRINT(".\LST\main.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

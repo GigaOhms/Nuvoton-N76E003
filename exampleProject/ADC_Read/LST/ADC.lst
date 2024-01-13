@@ -1,0 +1,126 @@
+C51 COMPILER V9.60.0.0   ADC                                                               01/13/2024 15:02:53 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ADC
+OBJECT MODULE PLACED IN .\Output\ADC.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Code\ADC.C OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include;..\..\LIB) DEFI
+                    -NE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\LST\ADC.lst) OBJECT(.\Output\ADC.obj)
+
+line level    source
+
+   1          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   2          /*                                                                                                        
+             - */
+   3          /* Copyright(c) 2017 Nuvoton Technology Corp. All rights reserved.                                        
+             - */
+   4          /*                                                                                                        
+             - */
+   5          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   6          
+   7          //********************************************************************************************************
+             -***
+   8          //  Website: http://www.nuvoton.com
+   9          //  E-Mail : MicroC-8bit@nuvoton.com
+  10          //  Date   : Jan/21/2017
+  11          //********************************************************************************************************
+             -***
+  12          
+  13          //********************************************************************************************************
+             -***
+  14          //  File Function: N76E003  ADC mutli channel demo code
+  15          //********************************************************************************************************
+             -***
+  16          #include "N76E003.h"
+  17          #include "SFR_Macro.h"
+  18          #include "Function_define.h"
+  19          #include "Common.h"
+  20          #include "Delay.h"
+  21          
+  22          #include "GPIO.h"
+  23          
+  24          //*****************  The Following is in define in Fucntion_define.h  ***************************
+  25          //****** Always include Function_define.h call the define you want, detail see main(void) *******
+  26          //***********************************************************************************************
+  27          
+  28                                          
+  29          /******************************************************************************
+  30          The main C function.  Program execution starts
+  31          here after stack initialization.
+  32          ******************************************************************************/
+  33          /*
+  34          uint16_t ADC_Read(uint8_t u8Channel)
+  35          {
+  36                  uint16_t value = 0x0000;
+  37                  
+  38                  
+  39                  ADCCON1 |= (1 << 0);
+  40                  // clock
+  41                  ADCCON1 &= ~(0x30);
+  42                  ADCCON1 |= 0x00;
+  43                  
+  44                  // set channel
+  45                  ADCCON0 &= ~(0x0F);
+C51 COMPILER V9.60.0.0   ADC                                                               01/13/2024 15:02:53 PAGE 2   
+
+  46                  ADCCON0 |= (u8Channel & 0x07);
+  47                  AINDIDS = 0x00;
+  48                  AINDIDS |= (1 << u8Channel);
+  49                  
+  50                  // clear flag
+  51                  ADCF = 0;
+  52                  //start convert
+  53                  ADCS = 1;
+  54                  
+  55                  while(ADCF == 0);
+  56                  value = (ADCRH << 4) | ADCRL;
+  57                  
+  58                  // disable ADC
+  59                  ADCCON1 &= ~(1 << 0);
+  60          
+  61                  
+  62                  return value;
+  63          }
+  64          */
+  65          
+  66          
+  67          void main (void) 
+  68          {
+  69   1              unsigned int ADCValue1, ADCValue2;
+  70   1              float fVoltage1, fVoltage2;
+  71   1              //uint8_t i;    
+  72   1              InitialUART0_Timer3(115200);
+  73   1              TI = 1;
+  74   1              
+  75   1              pinMode(5, INPUT);
+  76   1              pinMode(30, INPUT);
+  77   1      
+  78   1               while (1) {
+  79   2                      ADCValue1 = analogRead(30);     // channel 7 - pin P30
+  80   2                      fVoltage1 = ((float) ADCValue1 * 5.0) / 4095.0;
+  81   2                      ADCValue2 = analogRead(5);      // channel 4 - pin P05
+  82   2                      fVoltage2 = ((float) ADCValue2 * 5.0) / 4095.0;
+  83   2                       
+  84   2                      printf("\npin P30, P05: %.2f, %.2f", fVoltage1, fVoltage2);
+  85   2                      Timer0_Delay1ms(2000);
+  86   2      
+  87   2               }
+  88   1              
+  89   1                      
+  90   1              
+  91   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    162    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      12
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

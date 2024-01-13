@@ -1,0 +1,374 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              01/13/2024 15:56:51 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Output\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Code\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include;..\..\LIB) DEF
+                    -INE(FOSC_160000) DEBUG OBJECTEXTEND PRINT(.\LST\main.lst) OBJECT(.\Output\main.obj)
+
+line level    source
+
+   1          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   2          /*                                                                                                        
+             - */
+   3          /* Project anh Trong    - VIETTIEN                                                                                                                                                 */
+   4          /*                                                                                                        
+             - */
+   5          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   6          
+   7          
+   8          #include "N76E003.h"
+   9          #include "SFR_Macro.h"
+  10          #include "Function_define.h"
+  11          #include "Common.h"
+  12          #include "Delay.h"
+  13          
+  14          #include "GPIO.h"
+  15          #include "TM1637.h"
+  16          #include "ModbusRTU.h"
+  17          #include "I2Ceeprom.h"
+  18          
+  19          
+  20          /*------------------------------------------------
+  21          The main C function.  Program execution starts
+  22          here after stack initialization.
+  23          ------------------------------------------------*/
+  24          
+  25          #define CLK 11
+  26          #define DIO 12
+  27          
+  28          TM1637 display;
+  29          
+  30          void showValue(int so)
+  31          {
+  32   1        int xdata d = so / 1000;
+  33   1        int xdata c = ((so / 100) % 10);
+  34   1        int xdata b = (so % 100) / 10;
+  35   1        int xdata a = so % 10;
+  36   1      
+  37   1        uint8_t datas[] = { 0xff, 0xff, 0xff, 0xff };
+  38   1        datas[0] = TM1637_encodeDigit(d);
+  39   1        datas[1] = TM1637_encodeDigit(c);
+  40   1        datas[2] = TM1637_encodeDigit(b);
+  41   1        datas[3] = TM1637_encodeDigit(a);
+  42   1        TM1637_setSegments(&display, datas);
+  43   1      }
+  44          
+  45          
+  46          // ----------------- DATA SLA --------------------------
+  47          uint8_t error1 = 0, error2 = 0, error3 = 0, error4 = 0;
+  48          uint8_t id = 0x1;
+  49          uint16_t counter = 1215;
+  50          
+C51 COMPILER V9.60.0.0   MAIN                                                              01/13/2024 15:56:51 PAGE 2   
+
+  51          
+  52          // -------------- SERIAL MODBUS VARIABLE -------------------
+  53          #define sumSize 15U             // them 2 byte checkSum la 17
+  54          #define sizeData 14U
+  55          
+  56          uint8_t xdata dataSend[15];     // 3 byte resigter and u16data[]
+  57          
+  58          bit checkID = 0;
+  59          bit checkSend = 0;
+  60          bit checkWrite = 0;
+  61          bit checkSerial = 0;
+  62          
+  63          uint8_t xdata reciveCounter = 0;
+  64          uint8_t xdata reciveData[8];
+  65          uint32_t xdata serialTime = 0;
+  66          
+  67          #define serialTimeout 30UL
+  68          
+  69          uint8_t serial_available() {
+  70   1              return RI ? 1 : 0;
+  71   1      }
+  72          
+  73          uint8_t serial_read() {
+  74   1              uint8_t c = SBUF;
+  75   1              RI = 0;
+  76   1              return c;
+  77   1      }
+  78          
+  79          
+  80          // -------------- GPIO SETUP -----------------------
+  81          #define BT_UP 4
+  82          #define BT_DW 10
+  83          #define BT_E1 0
+  84          #define BT_E2 3
+  85          #define BT_E3 1
+  86          #define BT_E4 2
+  87          
+  88          bit S_BT_UP = 0;
+  89          bit S_BT_DW = 0;
+  90          bit S_BT_E1 = 0;
+  91          bit S_BT_E2 = 0;
+  92          bit S_BT_E3 = 0;
+  93          bit S_BT_E4 = 0;
+  94          
+  95          
+  96          
+  97          void showError(uint8_t error, uint8_t value) {
+  98   1        uint8_t datas[] = { 0, 0, 0, 0 };
+  99   1        datas[0] = TM1637_encodeDigit(14);
+ 100   1        datas[1] = TM1637_encodeDigit(error);
+ 101   1        datas[2] = 0x00;                      // 0x40 is '-'                  // 0x00 is ' '
+ 102   1        datas[3] = TM1637_encodeDigit(value);
+ 103   1        TM1637_setSegments(&display, datas);
+ 104   1        Timer0_Delay1ms(500);
+ 105   1      }
+ 106          
+ 107          
+ 108          void dataUpdate(uint8_t * pDataSend) {
+ 109   1              pDataSend[0] = LOBYTE(id);
+ 110   1              pDataSend[4] = LOBYTE(error1);
+ 111   1              pDataSend[6] = LOBYTE(error2);
+ 112   1              pDataSend[8] = LOBYTE(error3);
+C51 COMPILER V9.60.0.0   MAIN                                                              01/13/2024 15:56:51 PAGE 3   
+
+ 113   1              pDataSend[10] = LOBYTE(error4);
+ 114   1              pDataSend[11] = HIBYTE(counter);
+ 115   1              pDataSend[12] = LOBYTE(counter);
+ 116   1              pDataSend[14] = LOBYTE(id);
+ 117   1      }
+ 118          
+ 119          
+ 120          
+ 121          volatile uint32_t xdata millis = 0;
+ 122          volatile uint32_t xdata led_time;
+ 123          
+ 124          void Timer2_ISR (void) interrupt 5
+ 125          {
+ 126   1              clr_TF2;                                             //Clear Timer2 Interrupt Flag
+ 127   1              millis++;
+ 128   1      }
+ 129          
+ 130          
+ 131          
+ 132          // I2C 
+ 133          #define addrE1  0
+ 134          #define addrE2  1
+ 135          #define addrE3  2
+ 136          #define addrE4  3
+ 137          #define addrCNT 4
+ 138          #define addrID  6
+ 139          
+ 140          
+ 141          
+ 142          void main (void) {              
+ 143   1              InitialUART0_Timer3(9600);      
+ 144   1              I2C_Init();
+ 145   1              
+ 146   1              /*
+ 147   1              if (I2C_Write(addrE1, 1));
+ 148   1              Timer0_Delay1ms(1);
+ 149   1              if (I2C_Write(addrE2, 1));
+ 150   1              Timer0_Delay1ms(1);
+ 151   1              if (I2C_Write(addrE3, 1));
+ 152   1              Timer0_Delay1ms(1);
+ 153   1              if (I2C_Write(addrE4, 1));
+ 154   1              Timer0_Delay1ms(1);
+ 155   1              if (I2C_Write(addrID, 1));
+ 156   1              Timer0_Delay1ms(1);
+ 157   1              if (I2C_WriteInt(addrCNT, 99));
+ 158   1              Timer0_Delay1ms(1);
+ 159   1              */
+ 160   1              
+ 161   1              
+ 162   1              
+ 163   1              if (I2C_Read(addrE1, &error1));
+ 164   1              if (I2C_Read(addrE2, &error2));
+ 165   1              if (I2C_Read(addrE3, &error3));
+ 166   1              if (I2C_Read(addrE4, &error4));
+ 167   1              if (I2C_Read(addrID, &id));
+ 168   1              if (I2C_ReadInt(addrCNT, &counter));
+ 169   1      
+ 170   1              Send_Data_To_UART0(id);
+ 171   1              
+ 172   1              // --------------- ISR timer2 1kHz -----------------------
+ 173   1              TIMER2_DIV_4;
+ 174   1              TIMER2_Auto_Reload_Delay_Mode;
+C51 COMPILER V9.60.0.0   MAIN                                                              01/13/2024 15:56:51 PAGE 4   
+
+ 175   1              RCMP2L = TIMER_DIV4_VALUE_1ms;
+ 176   1              RCMP2H = TIMER_DIV4_VALUE_1ms >> 8;
+ 177   1              TH2 = 0;
+ 178   1              TL2 = 0;
+ 179   1              set_TR2;
+ 180   1              set_ET2;
+ 181   1          set_EA;             // Enable global interrupts
+ 182   1              
+ 183   1              // ------------------- GPIO Config ------------------------
+ 184   1              pinMode(BT_UP, INPUT);
+ 185   1              pinMode(BT_DW, INPUT);
+ 186   1              pinMode(BT_E1, INPUT);
+ 187   1              pinMode(BT_E2, INPUT);
+ 188   1              pinMode(BT_E3, INPUT);
+ 189   1              pinMode(BT_E4, INPUT);
+ 190   1              
+ 191   1              TM1637_init(&display, CLK, DIO);
+ 192   1              Timer0_Delay1ms(100);
+ 193   1              
+ 194   1              TM1637_setBrightness(&display, 0x0f); // led 7 doan
+ 195   1              showValue(counter);
+ 196   1              
+ 197   1              dataSend[1] = 0x3;              // value READ HOLDING REGISTERS
+ 198   1              dataSend[2] = 0xc;              // size of Data
+ 199   1              dataSend[3] = 0x0;              //highByte(error1);
+ 200   1              dataSend[5] = 0x0;              //highByte(error2);
+ 201   1              dataSend[7] = 0x0;              //highByte(error3);
+ 202   1              dataSend[9] = 0x0;              //highByte(error4);
+ 203   1              dataSend[13] = 0x0;             //highByte(id);
+ 204   1      
+ 205   1              dataUpdate(dataSend);
+ 206   1              led_time = millis;
+ 207   1              serialTime = millis;
+ 208   1      
+ 209   1              while(1)
+ 210   1              {       
+ 211   2                      if (digitalRead(BT_UP) == 0 && S_BT_UP == 0) {
+ 212   3                              S_BT_UP = 1;
+ 213   3                              counter = (counter >= 9999) ? counter : counter + 1;
+ 214   3                              dataUpdate(dataSend);
+ 215   3                              showValue(counter);
+ 216   3                              Timer0_Delay1ms(200);
+ 217   3                              if (I2C_WriteInt(addrCNT, counter))
+ 218   3                                      Timer0_Delay1ms(1);
+ 219   3                      } else if (digitalRead(BT_UP) == 1) S_BT_UP = 0;
+ 220   2                      
+ 221   2                      if (digitalRead(BT_DW) == 0 && S_BT_DW == 0) {
+ 222   3                              S_BT_DW = 1;
+ 223   3                              counter = (counter == 0) ? counter : counter - 1;
+ 224   3                              dataUpdate(dataSend);
+ 225   3                              showValue(counter);
+ 226   3                              Timer0_Delay1ms(200);
+ 227   3                              if (I2C_WriteInt(addrCNT, counter))
+ 228   3                                      Timer0_Delay1ms(1);
+ 229   3                      } else if (digitalRead(BT_DW) == 1) S_BT_DW = 0;
+ 230   2                      
+ 231   2                      if (digitalRead(BT_E1) == 0 && S_BT_E1 == 0) {
+ 232   3                              S_BT_E1 = 1;
+ 233   3                              error1 = (error1 == 1) ? 0 : 1;
+ 234   3                              dataUpdate(dataSend);
+ 235   3                              showError(1, error1);
+ 236   3                              if (I2C_Write(addrE1, error1))
+C51 COMPILER V9.60.0.0   MAIN                                                              01/13/2024 15:56:51 PAGE 5   
+
+ 237   3                                      Timer0_Delay1ms(1);
+ 238   3                              Timer0_Delay1ms(200);
+ 239   3                              showValue(counter);
+ 240   3                      } else if (digitalRead(BT_E1) == 1) S_BT_E1 = 0;
+ 241   2      
+ 242   2                      if (digitalRead(BT_E2) == 0 && S_BT_E2 == 0) {
+ 243   3                              S_BT_E2 = 1;
+ 244   3                              error2 = (error2 == 1) ? 0 : 1;
+ 245   3                              dataUpdate(dataSend);
+ 246   3                              showError(2, error2);
+ 247   3                              if (I2C_Write(addrE2, error2))
+ 248   3                                      Timer0_Delay1ms(1);
+ 249   3                              Timer0_Delay1ms(200);
+ 250   3                              showValue(counter);
+ 251   3                      } else if (digitalRead(BT_E2) == 1) S_BT_E2 = 0;
+ 252   2                      
+ 253   2                      if (digitalRead(BT_E3) == 0 && S_BT_E3 == 0) {
+ 254   3                              S_BT_E3 = 1;
+ 255   3                              error3 = (error3 == 1) ? 0 : 1;
+ 256   3                              dataUpdate(dataSend);
+ 257   3                              showError(3, error3);
+ 258   3                              if (I2C_Write(addrE3, error3))
+ 259   3                                      Timer0_Delay1ms(1);
+ 260   3                              Timer0_Delay1ms(200);
+ 261   3                              showValue(counter);
+ 262   3                      } else if (digitalRead(BT_E3) == 1) S_BT_E3 = 0;
+ 263   2                      
+ 264   2                      if (digitalRead(BT_E4) == 0 && S_BT_E4 == 0) {
+ 265   3                              S_BT_E4 = 1;
+ 266   3                              error4 = (error4 == 1) ? 0 : 1;
+ 267   3                              dataUpdate(dataSend);
+ 268   3                              showError(4, error4);
+ 269   3                              Timer0_Delay1ms(200);
+ 270   3                              showValue(counter);
+ 271   3                              if (I2C_Write(addrE4, error4))
+ 272   3                                      Timer0_Delay1ms(1);
+ 273   3                      } else if (digitalRead(BT_E4) == 1) S_BT_E4 = 0;
+ 274   2                      
+ 275   2                      
+ 276   2                      if ((uint32_t)(millis - led_time) >= 2000) {
+ 277   3                              led_time = millis;
+ 278   3                              P12 = ~P12;
+ 279   3                      }
+ 280   2                      
+ 281   2                      if (serial_available()) {
+ 282   3                              uint8_t c = serial_read();
+ 283   3                              if ((uint32_t)(millis - serialTime) > serialTimeout) {
+ 284   4                                      serialTime = millis;
+ 285   4                                      reciveCounter = 0;
+ 286   4                              }
+ 287   3                              reciveData[reciveCounter] = c;
+ 288   3                              reciveCounter++;
+ 289   3                              if (reciveCounter >= 8) {
+ 290   4                                      reciveCounter = 0;
+ 291   4                                      if (reciveData[0] == id) {
+ 292   5                                              if (reciveData[1] == 0x3) {                             // 0x3 - READ HOLDING REGISTERS 
+ 293   6                                                      dataUpdate(dataSend);
+ 294   6                                                      sendDataModbusRTU(dataSend, sumSize);
+ 295   6                                              } else if (reciveData[1] == 0x6) {              // 0x6 - Single Holding Register
+ 296   6                                                      if (reciveData[3] == 0) {
+ 297   7                                                              error1 = reciveData[5];
+ 298   7                                                              showError(1, error1);
+C51 COMPILER V9.60.0.0   MAIN                                                              01/13/2024 15:56:51 PAGE 6   
+
+ 299   7                                                              if (I2C_Write(addrE1, error1))
+ 300   7                                                                      Timer0_Delay1ms(1);
+ 301   7                                                      } else if (reciveData[3] == 1) {
+ 302   7                                                              error2 = reciveData[5];
+ 303   7                                                              showError(2, error2);
+ 304   7                                                              if (I2C_Write(addrE2, error2))
+ 305   7                                                                      Timer0_Delay1ms(1);
+ 306   7                                                      } else if (reciveData[3] == 2) {
+ 307   7                                                              error3 = reciveData[5];
+ 308   7                                                              showError(3, error3);
+ 309   7                                                              if (I2C_Write(addrE3, error3))
+ 310   7                                                                      Timer0_Delay1ms(1);
+ 311   7                                                      } else if (reciveData[3] == 3) {
+ 312   7                                                              error4 = reciveData[5];
+ 313   7                                                              showError(4, error4);
+ 314   7                                                              if (I2C_Write(addrE4, error4))
+ 315   7                                                                      Timer0_Delay1ms(1);
+ 316   7                                                      } else if (reciveData[3] == 4) {
+ 317   7                                                              counter = (reciveData[4] << 8) ^ reciveData[5];
+ 318   7                                                      } else if (reciveData[3] == 5) {
+ 319   7                                                              id = reciveData[5];
+ 320   7                                                              if (I2C_Write(addrID, id))
+ 321   7                                                                      Timer0_Delay1ms(1);
+ 322   7                                                      }
+ 323   6                                                      dataUpdate(dataSend);
+ 324   6                                                      showValue(counter);
+ 325   6                                                      if (I2C_WriteInt(addrCNT, counter))
+ 326   6                                                              Timer0_Delay1ms(1);
+ 327   6                                              }
+ 328   5                                      }
+ 329   4                              }
+ 330   3                      }
+ 331   2              }
+ 332   1      }
+ 333          
+ 334          
+ 335          
+ 336          // ------------------------ END of main ------------------------------------
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1636    ----
+   CONSTANT SIZE    =      8    ----
+   XDATA SIZE       =     36       8
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =     10    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

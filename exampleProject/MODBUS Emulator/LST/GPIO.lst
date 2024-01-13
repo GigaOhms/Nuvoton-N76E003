@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 11:40:59 PAGE 1   
+C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 14:04:21 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE GPIO
@@ -38,7 +38,7 @@ line level    source
   19          #include "Common.h"
   20          #include "Delay.h"
   21          
-  22          #include "avr.h"
+  22          #include "gpio.h"
   23          #include "TM1637.h"
   24          #include "ModbusRTU.h"
   25          
@@ -62,7 +62,7 @@ line level    source
   43          
   44          uint8_t serial_read() {
   45   1              uint8_t c = SBUF;
-C51 COMPILER V9.60.0.0   GPIO                                                              01/12/2024 11:40:59 PAGE 2   
+C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 14:04:21 PAGE 2   
 
   46   1              RI = 0;
   47   1              return c;
