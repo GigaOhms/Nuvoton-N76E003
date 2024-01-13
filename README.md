@@ -105,7 +105,7 @@ digitalRead(3);
 pinMode(11, INPUT);
 
 while(1) {
-    adaValue = analogRead(11);
+    uint16_t adaValue = analogRead(11);
 }
 ```
 
