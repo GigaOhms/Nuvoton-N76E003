@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   CAPTURE                                                           01/03/2024 15:35:12 PAGE 1   
+C51 COMPILER V9.60.0.0   CAPTURE                                                           01/13/2024 09:40:20 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE CAPTURE
@@ -57,36 +57,34 @@ line level    source
   38          {
   39   1          Set_All_GPIO_Quasi_Mode;
   40   1              
-  41   1              TIMER2_DIV_128;
-  42   1              TIMER2_Auto_Reload_Delay_Mode;
-  43   1              
-  44   1              RCMP2L = TIMER_DIV128_VALUE_100ms;
-  45   1              RCMP2H = TIMER_DIV128_VALUE_100ms >> 8;
-C51 COMPILER V9.60.0.0   CAPTURE                                                           01/03/2024 15:35:12 PAGE 2   
+  41   1              // --------------- ISR timer2 1kHz -----------------------
+  42   1              TIMER2_DIV_4;
+  43   1              TIMER2_Auto_Reload_Delay_Mode;
+  44   1              RCMP2L = TIMER_DIV4_VALUE_1ms;
+  45   1              RCMP2H = TIMER_DIV4_VALUE_1ms >> 8;
+C51 COMPILER V9.60.0.0   CAPTURE                                                           01/13/2024 09:40:20 PAGE 2   
 
-  46   1      
-  47   1              TH2 = 0;
-  48   1              TL2 = 0;
-  49   1              
-  50   1              set_TR2;
-  51   1              set_ET2;
-  52   1          set_EA;             // Enable global interrupts
-  53   1              
-  54   1              led_time = millis;
-  55   1      
-  56   1          while(1) {
-  57   2                      if ((uint32_t)(millis - led_time) >= 5) {
-  58   3                              led_time = millis;
-  59   3                              P12 = ~P12;
-  60   3                      }
-  61   2              }
-  62   1      }
-  63          
-  64          
+  46   1              TH2 = 0;
+  47   1              TL2 = 0;
+  48   1              set_TR2;
+  49   1              set_ET2;
+  50   1          set_EA;             // Enable global interrupts
+  51   1              
+  52   1              led_time = millis;
+  53   1      
+  54   1          while(1) {
+  55   2                      if ((uint32_t)(millis - led_time) >= 500) {
+  56   3                              led_time = millis;
+  57   3                              P12 = ~P12;
+  58   3                      }
+  59   2              }
+  60   1      }
+  61          
+  62          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    138    ----
+   CODE SIZE        =    139    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
