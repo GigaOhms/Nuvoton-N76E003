@@ -24,8 +24,7 @@ P12_OpenDrain_Mode;                 // Set gpio P12 chế độ Open-Drain   - O
 
 ### UART
 ```c
-InitialUART0_Timer3(9600);          // khởi tạo uart 0 cho timer3 với tốc độ baud là 9600 (có thể đặt
-4800,115200....)
+InitialUART0_Timer3(9600);          // khởi tạo uart 0 cho timer3 với tốc độ baud là 9600
 InitialUART1_Timer3(baudRate);      // Khởi tạo uart 1 cho timer3
 Send_Data_To_UART0(byteData);       // Gửi 1 byte qua uart
 TI = 1;                             // Sử dụng khi muốn dùng hàm `printf()`
