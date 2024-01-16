@@ -9,7 +9,6 @@ All function define inital setting file for Nuvoton N76E003
 
 #define nop _nop_();
 
-
 //16 --> 8 x 2
 #define HIBYTE(v1)              ((UINT8)((v1)>>8))                      //v1 is UINT16
 #define LOBYTE(v1)              ((UINT8)((v1)&0xFF))

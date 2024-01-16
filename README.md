@@ -5,11 +5,25 @@ Project using Nuvoton-N76E003 8051 and library TM1637 Display, I2C EEPROM AT24Cx
 #### Datasheet [N76E003AT20](https://www.nuvoton.com/export/resource-files/DS_N76E003_EN_Rev1.10.pdf)
 
 #### Download [package KeilC or IAR for N76E003](https://www.nuvoton.com/products/microcontrollers/8bit-8051-mcus/low-pin-count-8051-series/n76e003/?group=Software&tab=2) or this Repo
-#### Use [USB VNpro in KeilC](http://vidieukhien.org/tich-hop-kit-vdk-1-0-vao-keil-c.html) or [USB VNpro in  ISP Prog v6](http://vidieukhien.org/phan-mem-isp-prog-v6.html) to upload program
+#### Sử dụng mạch nạp [VNpro for 89S&AVR](https://www.proe.vn/mach-nap-vn-pro-for-89s-avr-1) như hướng dẫn [USB VNpro in KeilC](http://vidieukhien.org/tich-hop-kit-vdk-1-0-vao-keil-c.html)
+#### Hoặc [USB VNpro in  ISP Prog v6](http://vidieukhien.org/phan-mem-isp-prog-v6.html) để nạp chương trình
 
 ## Tutorial and example project:
 - [VN](http://vidieukhien.org/category/8051/ms51fb9ae)
 - [EN](https://embedded-lab.com/blog/getting-started-nuvoton-8-bit-microcontrollers-coding-part-1/)
+
+&nbsp;
+
+## `__ Data type 8051 __ (kiểu dữ liệu)`
+
+### - Ngoài các kiểu dữ liệu phổ biến, KeilC-8051 còn có 1 số kiểu dữ liệu và tổ chức bộ nhớ khác
+```c
+bit var;                // size: 1 bit - tương tự như bool, chỉ có 2 giá trị 0 và 1
+xdata dataType var;     // 'xdata' - là một từ khóa được sử dụng để chỉ định rằng biến nên được lưu trữ 
+                        // trong vùng nhớ ngoại vi thay vì được lưu trên vùng nhớ chính.
+                        // Giúp giải phóng bộ nhớ chính cho các tác vụ quan trọng
+
+```
 
 &nbsp;
 

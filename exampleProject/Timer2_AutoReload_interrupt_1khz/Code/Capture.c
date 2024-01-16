@@ -15,6 +15,7 @@
 //  File Function: N76E003 Timer2 Capture Mode demo code
 //***********************************************************************************************************
 
+
 #include "N76E003.h"
 #include "Common.h"
 #include "Delay.h"
