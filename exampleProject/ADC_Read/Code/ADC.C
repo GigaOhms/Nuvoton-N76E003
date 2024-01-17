@@ -21,26 +21,25 @@
 
 #include "GPIO.h"
 
-
+#define ADCpin 17
 
 void main (void) 
 {
-	unsigned int ADCValue1, ADCValue2;
-	float fVoltage1, fVoltage2;
+	unsigned int ADCValue1;
+	float fVoltage1;
 	InitialUART0_Timer3(115200);
 	TI = 1;
 	
-	pinMode(5, INPUT);
-	pinMode(30, INPUT);
+	pinMode(ADCpin, INPUT);
 
 	 while (1) {
-		ADCValue1 = analogRead(30);	// channel 7 - pin P30
+		ADCValue1 = analogRead(ADCpin);
 		fVoltage1 = ((float) ADCValue1 * 5.0) / 4095.0;
-		ADCValue2 = analogRead(5);	// channel 4 - pin P05
-		fVoltage2 = ((float) ADCValue2 * 5.0) / 4095.0;
 		 
-		printf("\npin P30, P05: %.2f, %.2f", fVoltage1, fVoltage2);
-		Timer0_Delay1ms(2000);
+		//printf("\nADC value at pin 17 is: %.2f", fVoltage1);
+		 
+		printf("\n-1\t6\t%.2f", fVoltage1);
+		Timer0_Delay1ms(100);
 
 	 }
 }

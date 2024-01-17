@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 14:43:14 PAGE 1   
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 10:01:18 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE GPIO
@@ -14,7 +14,7 @@ line level    source
    4          #include "Function_define.h"
    5          #include "Common.h"
    6          
-   7          #include "gpio.h"
+   7          #include "GPIO.h"
    8          
    9          void pinMode(uint8_t pin, uint8_t mode) {
   10   1          bit registerPin = 0;
@@ -62,7 +62,7 @@ line level    source
   52   3                  P0M2 |= (1 << pin);
   53   3              }
   54   2          } else if (mode == INPUT) {
-C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 14:43:14 PAGE 2   
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 10:01:18 PAGE 2   
 
   55   2              if (registerPin == 1) {
   56   3                  P1M1 |= (1 << pin);
@@ -126,7 +126,7 @@ line level    source
  114   2              P01 = stt;
  115   2          } else if (pin == 2) {
  116   2              P02 = stt;
-C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 14:43:14 PAGE 3   
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 10:01:18 PAGE 3   
 
  117   2          } else if (pin == 3) {
  118   2              P03 = stt;
@@ -190,7 +190,7 @@ line level    source
  176          
  177          
  178          uint16_t analogRead(uint8_t pin) {
-C51 COMPILER V9.60.0.0   GPIO                                                              01/13/2024 14:43:14 PAGE 4   
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 10:01:18 PAGE 4   
 
  179   1          if (pin == 17) {
  180   2              return ADC_Read(0);

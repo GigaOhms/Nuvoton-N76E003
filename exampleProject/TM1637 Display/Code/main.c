@@ -51,7 +51,8 @@ void showValue(int so)
 // ----------------- DATA SLA --------------------------
 uint8_t error1 = 0, error2 = 0, error3 = 0, error4 = 0;
 uint8_t id = 0x1;
-uint16_t counter = 1025;
+uint16_t counter = 0;
+
 
 
 
@@ -60,10 +61,15 @@ void main (void) {
 	TM1637_init(&display, CLK, DIO);
 	Timer0_Delay1ms(100);
 	TM1637_setBrightness(&display, 0x0f); // led 7 doan
-	showValue(counter);
+
 	
 	while(1)
-	{}
+	{
+		showValue(counter++);
+		Timer0_Delay1ms(500);
+		if (counter == 9999)
+			counter = 0;
+	}
 }
 
 

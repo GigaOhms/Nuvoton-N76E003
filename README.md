@@ -68,7 +68,7 @@ Timer3_Delay10us(u32CNT);
 ## `__ USE Library __ (sử dụng thư viện tự tạo)`
 Download folder `LIB`, save to package folder.
 
-Open project in keilC, go to `Options for Target` -> `tab C51`, add `..\..\LIB` to `Include Paths`
+Open project in keilC, go to `Options for Target` -> `tab C51`, add `"..\..\LIB"` to `Include Paths`
 
 &nbsp;
 

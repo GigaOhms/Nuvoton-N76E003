@@ -1,0 +1,113 @@
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 10:45:08 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE GPIO
+OBJECT MODULE PLACED IN .\Output\GPIO.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Code\GPIO.C OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include) DEFINE(FOSC_1
+                    -60000) DEBUG OBJECTEXTEND PRINT(.\LST\GPIO.lst) OBJECT(.\Output\GPIO.obj)
+
+line level    source
+
+   1          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   2          /*                                                                                                        
+             - */
+   3          /* Copyright(c) 2017 Nuvoton Technology Corp. All rights reserved.                                        
+             - */
+   4          /*                                                                                                        
+             - */
+   5          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   6          
+   7          //********************************************************************************************************
+             -***
+   8          //  Website: http://www.nuvoton.com
+   9          //  E-Mail : MicroC-8bit@nuvoton.com
+  10          //  Date   : Jan/21/2017
+  11          //********************************************************************************************************
+             -***
+  12          
+  13          //********************************************************************************************************
+             -***
+  14          //  File Function: N76E003 GPIO demo code
+  15          //********************************************************************************************************
+             -***
+  16          #include "N76E003.h"
+  17          #include "SFR_Macro.h"
+  18          #include "Function_define.h"
+  19          #include "Common.h"
+  20          #include "Delay.h"
+  21          
+  22          
+  23          
+  24          void out1byte(uint8_t byteout){
+  25   1              uint8_t i;
+  26   1              for (i = 0; i < 8; i++){
+  27   2                      P05 = byteout >> 7;
+  28   2                      P10 = 0;
+  29   2                      P10 = 1;
+  30   2                      byteout = byteout << 1;
+  31   2              }
+  32   1              P00 = 0;
+  33   1              P00 = 1;
+  34   1      }
+  35          
+  36          void ON_LED(uint8_t * STT, uint8_t n){
+  37   1              if (n < 1 || n > 8) return ;
+  38   1              *STT |= (1 << (n - 1));
+  39   1              out1byte(*STT);
+  40   1      }
+  41          
+  42          void OFF_LED(uint8_t * STT, uint8_t n){
+  43   1              if (n < 1 || n > 8) return ;
+  44   1              *STT &= ~(1 << (n - 1));
+  45   1              out1byte(*STT);
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 10:45:08 PAGE 2   
+
+  46   1      }
+  47          
+  48          void main (void) 
+  49          {
+  50   1      //      unsigned char temp;
+  51   1      //      Set_All_GPIO_Quasi_Mode;                                        // Define in Function_define.h
+  52   1              uint8_t led_STT = 0, i = 0;
+  53   1              
+  54   1              P00_PushPull_Mode;              // LAT595
+  55   1              P05_PushPull_Mode;              // QH595
+  56   1              P10_PushPull_Mode;              // CLK595
+  57   1              
+  58   1              // PUSH_PULL la OUTPUT low-high
+  59   1              
+  60   1      
+  61   1              while(1)
+  62   1              {
+  63   2                      for (i = 1; i <= 8; i++) {
+  64   3                              ON_LED(&led_STT, i);
+  65   3                              Timer0_Delay1ms(500);
+  66   3                      }
+  67   2                      Timer0_Delay1ms(500);
+  68   2                      for (i = 1; i <= 8; i++) {
+  69   3                              OFF_LED(&led_STT, i);
+  70   3                              Timer0_Delay1ms(500);
+  71   3                      }
+  72   2                      Timer0_Delay1ms(500);
+  73   2              }
+  74   1      
+  75   1      }
+  76          
+  77          
+  78          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    291    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
