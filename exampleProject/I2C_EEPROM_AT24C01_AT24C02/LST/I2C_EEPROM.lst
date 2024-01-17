@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   I2C_EEPROM                                                        01/12/2024 10:55:12 PAGE 1   
+C51 COMPILER V9.60.0.0   I2C_EEPROM                                                        01/17/2024 15:52:28 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE I2C_EEPROM
@@ -19,104 +19,140 @@ line level    source
    9          
   10          // ------------------------ MAIN -----------------------
   11          
-  12          void main(void)
-  13          {
-  14   1          char a = 0x0;
-  15   1          char b = 0x0;
-  16   1          char c = 0x0;
-  17   1          char d = 0x0;
-  18   1      
-  19   1              uint16_t sum, sum1;
+  12          #define WAIT_I2C 2
+  13          
+  14          void main(void)
+  15          {
+  16   1          char a = 0x0;
+  17   1          char b = 0x0;
+  18   1          char c = 0x0;
+  19   1          char d = 0x0;
   20   1      
-  21   1              P1M1 &= ~(1 << 2);
-  22   1          P1M2 |= (1 << 2);
-  23   1              P12 = 0;
-  24   1          InitialUART0_Timer3(115200);
-  25   1          TI = 1;     
-  26   1              
-  27   1              /* init */
-  28   1              I2C_Init();
-  29   1              
-  30   1              /* check address */
-  31   1              if (!I2C_CheckAddress(0xA0)) {
-  32   2                      while (1) {
-  33   3                              P12 = 1;
-  34   3                              Timer0_Delay1ms(500);
-  35   3                              P12 = 0;
+  21   1              uint16_t sum, sum1;
+  22   1      
+  23   1              P1M1 &= ~(1 << 2);
+  24   1          P1M2 |= (1 << 2);
+  25   1              P12 = 0;
+  26   1          InitialUART0_Timer3(115200);
+  27   1          TI = 1;     
+  28   1              
+  29   1              /* init */
+  30   1              I2C_Init();
+  31   1              
+  32   1              /* check address */
+  33   1              if (!I2C_CheckAddress(EEPROM_SLA)) {
+  34   2                      while (1) {
+  35   3                              P12 = 1;
   36   3                              Timer0_Delay1ms(500);
-  37   3                  printf("Check Error\n");
-  38   3                      }
-  39   2              }
-  40   1              
-  41   1              Timer0_Delay1ms(1);
+  37   3                              P12 = 0;
+  38   3                              Timer0_Delay1ms(500);
+  39   3                  printf("Check Error\n");
+  40   3                      }
+  41   2              }
   42   1              
-  43   1              /* write data */
-  44   1              if (!I2C_WriteInt(2, 1570)) {
-  45   2                      while (1) {
-  46   3                              P12 = 1;
-  47   3                              Timer0_Delay1ms(500);
-  48   3                              P12 = 0;
-  49   3                              Timer0_Delay1ms(500);
-  50   3                  printf("Write data Error\n");
-  51   3                      }
-  52   2              }
-  53   1              
-  54   1              Timer0_Delay1ms(1);
-C51 COMPILER V9.60.0.0   I2C_EEPROM                                                        01/12/2024 10:55:12 PAGE 2   
+  43   1              Timer0_Delay1ms(WAIT_I2C);
+  44   1              
+  45   1              /* write data */
+  46   1              
+  47   1              if (!I2C_WriteInt(2, 1234)) {
+  48   2                      while (1) {
+  49   3                              P12 = 1;
+  50   3                              Timer0_Delay1ms(500);
+  51   3                              P12 = 0;
+  52   3                              Timer0_Delay1ms(500);
+  53   3                  printf("Write data Error 1\n");
+  54   3                      }
+C51 COMPILER V9.60.0.0   I2C_EEPROM                                                        01/17/2024 15:52:28 PAGE 2   
 
-  55   1      
-  56   1              if (!I2C_WriteInt(4, 2023)) {
-  57   2                      while (1) {
-  58   3                              P12 = 1;
-  59   3                              Timer0_Delay1ms(500);
-  60   3                              P12 = 0;
-  61   3                              Timer0_Delay1ms(500);
-  62   3                  printf("Write data Error\n");
-  63   3                      }
-  64   2              }
-  65   1              Timer0_Delay1ms(1);
-  66   1      
-  67   1              if (!I2C_Read(2, &a)) {
-  68   2                      while (1) {
-  69   3                              Timer0_Delay1ms(1000);
-  70   3                  printf("Read data Error\n");
-  71   3                      }
-  72   2              }
-  73   1              if (!I2C_Read(3, &b)) {
-  74   2                      while (1) {
-  75   3                              Timer0_Delay1ms(1000);
-  76   3                  printf("Read data Error\n");
-  77   3                      }
-  78   2              }
-  79   1              if (!I2C_ReadInt(4, &sum1)) {
-  80   2                      while (1) {
-  81   3                              Timer0_Delay1ms(1000);
-  82   3                  printf("Read data Error\n");
-  83   3                      }
-  84   2              }
-  85   1      
-  86   1      
-  87   1              sum = (a << 8) | b;
-  88   1              
-  89   1              Timer0_Delay1ms(500);
-  90   1          printf("Code test PASS\n");
-  91   1              
-  92   1      
-  93   1              while (1) {
-  94   2                      P12 = 1;
-  95   2                      Timer0_Delay1ms(500);
-  96   2                      P12 = 0;
-  97   2                      Timer0_Delay1ms(500);
-  98   2              printf("Data read: %d %d\n", sum, sum1);
-  99   2              }
- 100   1      }
- 101          
- 102          
+  55   2              }
+  56   1              /*
+  57   1              if (!I2C_Write(6, 0x04)) {
+  58   1                      while (1) {
+  59   1                              P12 = 1;
+  60   1                              Timer0_Delay1ms(500);
+  61   1                              P12 = 0;
+  62   1                              Timer0_Delay1ms(500);
+  63   1                  printf("Write data Error 1\n");
+  64   1                      }
+  65   1              }
+  66   1              
+  67   1              
+  68   1              Timer0_Delay1ms(WAIT_I2C);
+  69   1      
+  70   1              if (!I2C_Write(7, 0xD2)) {
+  71   1                      while (1) {
+  72   1                              P12 = 1;
+  73   1                              Timer0_Delay1ms(500);
+  74   1                              P12 = 0;
+  75   1                              Timer0_Delay1ms(500);
+  76   1                  printf("Write data Error 1\n");
+  77   1                      }
+  78   1              }
+  79   1              */
+  80   1              
+  81   1              
+  82   1              Timer0_Delay1ms(WAIT_I2C);
+  83   1      
+  84   1              if (!I2C_WriteInt(4, 5678)) {
+  85   2                      while (1) {
+  86   3                              P12 = 1;
+  87   3                              Timer0_Delay1ms(500);
+  88   3                              P12 = 0;
+  89   3                              Timer0_Delay1ms(500);
+  90   3                  printf("Write data Error 2\n");
+  91   3                      }
+  92   2              }
+  93   1              Timer0_Delay1ms(WAIT_I2C);
+  94   1      
+  95   1              if (!I2C_Read(6, &a)) {
+  96   2                      while (1) {
+  97   3                              Timer0_Delay1ms(1000);
+  98   3                  printf("Read data Error 3\n");
+  99   3                      }
+ 100   2              }
+ 101   1              if (!I2C_Read(7, &b)) {
+ 102   2                      while (1) {
+ 103   3                              Timer0_Delay1ms(1000);
+ 104   3                  printf("Read data Error 4\n");
+ 105   3                      }
+ 106   2              }
+ 107   1              
+ 108   1              if (!I2C_ReadInt(4, &sum1)) {
+ 109   2                      while (1) {
+ 110   3                              Timer0_Delay1ms(1000);
+ 111   3                  printf("Read data Error 5\n");
+ 112   3                      }
+ 113   2              }
+ 114   1              if (!I2C_ReadInt(6, &sum)) {
+ 115   2                      while (1) {
+ 116   3                              Timer0_Delay1ms(1000);
+C51 COMPILER V9.60.0.0   I2C_EEPROM                                                        01/17/2024 15:52:28 PAGE 3   
+
+ 117   3                  printf("Read data Error 5\n");
+ 118   3                      }
+ 119   2              }
+ 120   1      
+ 121   1              //sum = (a << 8) | b;
+ 122   1              
+ 123   1              Timer0_Delay1ms(500);
+ 124   1          printf("Code test PASS\n");
+ 125   1              
+ 126   1      
+ 127   1              while (1) {
+ 128   2                      P12 = 1;
+ 129   2                      Timer0_Delay1ms(500);
+ 130   2                      P12 = 0;
+ 131   2                      Timer0_Delay1ms(500);
+ 132   2              printf("Data read: %d %d 0x%2x 0x%2x \n", sum, sum1, a & 0xff, b & 0xff);
+ 133   2              }
+ 134   1      }
+ 135          
+ 136          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    398    ----
-   CONSTANT SIZE    =     82    ----
+   CODE SIZE        =    425    ----
+   CONSTANT SIZE    =    157    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----       8

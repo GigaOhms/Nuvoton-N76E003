@@ -1,0 +1,191 @@
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 16:57:02 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE GPIO
+OBJECT MODULE PLACED IN .\Output\GPIO.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Code\GPIO.C OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Include) DEFINE(FOSC_1
+                    -60000) DEBUG OBJECTEXTEND PRINT(.\LST\GPIO.lst) OBJECT(.\Output\GPIO.obj)
+
+line level    source
+
+   1          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   2          /*                                                                                                        
+             - */
+   3          /* Copyright(c) 2017 Nuvoton Technology Corp. All rights reserved.                                        
+             - */
+   4          /*                                                                                                        
+             - */
+   5          /*--------------------------------------------------------------------------------------------------------
+             --*/
+   6          
+   7          //********************************************************************************************************
+             -***
+   8          //  Website: http://www.nuvoton.com
+   9          //  E-Mail : MicroC-8bit@nuvoton.com
+  10          //  Date   : Jan/21/2017
+  11          //********************************************************************************************************
+             -***
+  12          
+  13          //********************************************************************************************************
+             -***
+  14          //  File Function: N76E003 GPIO demo code
+  15          //********************************************************************************************************
+             -***
+  16          #include "N76E003.h"
+  17          #include "SFR_Macro.h"
+  18          #include "Function_define.h"
+  19          #include "Common.h"
+  20          #include "Delay.h"
+  21          
+  22          // --------------------- Example IC 74HC165 - 8 BUTTON ---------------------------------------------------
+             ----
+  23          
+  24          void out1byte(uint8_t byteout){
+  25   1              uint8_t i;
+  26   1              for (i = 0; i < 8; i++){
+  27   2                      P05 = byteout >> 7;
+  28   2                      P10 = 0;
+  29   2                      P10 = 1;
+  30   2                      byteout = byteout << 1;
+  31   2              }
+  32   1              P00 = 0;
+  33   1              P00 = 1;
+  34   1      }
+  35          
+  36          void ON_LED(uint8_t * STT, uint8_t n){
+  37   1              if (n < 1 || n > 8) return ;
+  38   1              *STT |= (1 << (n - 1));
+  39   1              out1byte(*STT);
+  40   1      }
+  41          
+  42          void OFF_LED(uint8_t * STT, uint8_t n){
+  43   1              if (n < 1 || n > 8) return ;
+  44   1              *STT &= ~(1 << (n - 1));
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 16:57:02 PAGE 2   
+
+  45   1              out1byte(*STT);
+  46   1      }
+  47          
+  48          
+  49          #define SHLD165 P04
+  50          #define CLK165  P01
+  51          #define INH165  P03
+  52          #define QH165   P02
+  53          
+  54          
+  55          uint8_t in1byte() {
+  56   1              uint8_t i, incoming = 0, dataa = 0, dataas = 0;
+  57   1              SHLD165 = 0;
+  58   1              SHLD165 = 1;
+  59   1              INH165  = 0;
+  60   1              for (i = 0; i < 8; i++) {
+  61   2                      incoming = incoming << 1;
+  62   2                      if (QH165 == 0)
+  63   2                              incoming = incoming | 0x1;
+  64   2                      CLK165 = 1;
+  65   2                      CLK165 = 0;
+  66   2              }
+  67   1              dataas = ~incoming;
+  68   1              return dataas;
+  69   1      }
+  70          
+  71          #define BT_DW 0x7f
+  72          #define BT_UP 0xf7
+  73          #define BT_E1 0xbf
+  74          #define BT_E2 0xfb
+  75          #define BT_E3 0xfe
+  76          #define BT_E4 0xfd
+  77          
+  78          #define WAIT_BTN 200
+  79          
+  80          bit S_BT_DW = 0;
+  81          bit S_BT_UP = 0;
+  82          bit S_BT_E1 = 0;
+  83          bit S_BT_E2 = 0;
+  84          bit S_BT_E3 = 0;
+  85          bit S_BT_E4 = 0;
+  86          
+  87          void main (void) 
+  88          {
+  89   1      //      Set_All_GPIO_Quasi_Mode;                                        // Define in Function_define.h
+  90   1              uint8_t BTN = 0, i = 0;
+  91   1              
+  92   1              InitialUART0_Timer3(9600);
+  93   1              TI = 1;
+  94   1              
+  95   1              P01_PushPull_Mode;              // CLK165
+  96   1              P04_PushPull_Mode;              // SHLD165
+  97   1              P03_PushPull_Mode;              // INH165
+  98   1              P02_Input_Mode;                 // QH165
+  99   1              
+ 100   1              P00_PushPull_Mode;              // LAT165
+ 101   1              P05_PushPull_Mode;              // QH595
+ 102   1              P10_PushPull_Mode;              // CLK595
+ 103   1              
+ 104   1              // PUSH_PULL la OUTPUT low-high
+ 105   1              
+ 106   1      
+C51 COMPILER V9.60.0.0   GPIO                                                              01/17/2024 16:57:02 PAGE 3   
+
+ 107   1              while(1)
+ 108   1              {
+ 109   2                      BTN = in1byte();
+ 110   2                      //out1byte(BTN);                // Test with 74HC595
+ 111   2                      
+ 112   2                      if (BTN == BT_DW && S_BT_DW == 0) {
+ 113   3                              S_BT_DW = 1;
+ 114   3                              printf("\nBT_DW");
+ 115   3                              Timer0_Delay1ms(WAIT_BTN);
+ 116   3                      } else if (BTN == 0xff) S_BT_DW = 0;
+ 117   2                      
+ 118   2                      if (BTN == BT_UP && S_BT_UP == 0) {
+ 119   3                              S_BT_UP = 1;
+ 120   3                              printf("\nBT_UP");
+ 121   3                              Timer0_Delay1ms(WAIT_BTN);
+ 122   3                      } else if (BTN == 0xff) S_BT_UP = 0;
+ 123   2                      
+ 124   2                      if (BTN == BT_E1 && S_BT_E1 == 0) {
+ 125   3                              S_BT_E1 = 1;
+ 126   3                              printf("\nBT_E1");
+ 127   3                              Timer0_Delay1ms(WAIT_BTN);
+ 128   3                      } else if (BTN == 0xff) S_BT_E1 = 0;
+ 129   2                      
+ 130   2                      if (BTN == BT_E2 && S_BT_E2 == 0) {
+ 131   3                              S_BT_E2 = 1;
+ 132   3                              printf("\nBT_E2");
+ 133   3                              Timer0_Delay1ms(WAIT_BTN);
+ 134   3                      } else if (BTN == 0xff) S_BT_E2 = 0;
+ 135   2                      
+ 136   2                      if (BTN == BT_E3 && S_BT_E3 == 0) {
+ 137   3                              S_BT_E3 = 1;
+ 138   3                              printf("\nBT_E3");
+ 139   3                              Timer0_Delay1ms(WAIT_BTN);
+ 140   3                      } else if (BTN == 0xff) S_BT_E3 = 0;
+ 141   2                      
+ 142   2                      if (BTN == BT_E4 && S_BT_E4 == 0) {
+ 143   3                              S_BT_E4 = 1;
+ 144   3                              printf("\nBT_E4");
+ 145   3                              Timer0_Delay1ms(WAIT_BTN);
+ 146   3                      } else if (BTN == 0xff) S_BT_E4 = 0;
+ 147   2                              
+ 148   2              }
+ 149   1      
+ 150   1      }
+ 151          
+ 152          
+ 153          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    516    ----
+   CONSTANT SIZE    =     42    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      6    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

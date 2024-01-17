@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 1   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE I2CEEPROM
@@ -62,7 +62,7 @@ line level    source
   52   2                      ++t;
   53   2              }
   54   1              
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 2   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 2   
 
   55   1              if (u8TimeOut) {
   56   2                      /* start error */
@@ -126,7 +126,7 @@ line level    source
  114   2                              /* send data error */
  115   2                              send_stop();
  116   2                              return 0;
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 3   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 3   
 
  117   2                      }
  118   1                      if (I2STAT != 0x28) {
@@ -190,7 +190,7 @@ line level    source
  176   1              while (1) {
  177   2                      if (SI) {
  178   3                              break;
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 4   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 4   
 
  179   3                      }
  180   2                      if (!t) {
@@ -254,7 +254,7 @@ line level    source
  238   3                              }
  239   2                              ++t;
  240   2                      }
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 5   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 5   
 
  241   1                      if (u8TimeOut) {
  242   2                              /* send data error */
@@ -318,7 +318,7 @@ line level    source
  300   1              SI = 0;
  301   1              t = 1;
  302   1              u8TimeOut = 0;
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 6   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 6   
 
  303   1              while (1) {
  304   2                      if (SI) {
@@ -382,7 +382,7 @@ line level    source
  362   4                                      break;
  363   4                              }
  364   3                              if (!t) {
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 7   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 7   
 
  365   4                                      u8TimeOut = 1;
  366   4                                      break;
@@ -446,7 +446,7 @@ line level    source
  424   1              
  425   1              if (I2STAT != 0x08) {
  426   2                      /* start error */
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 8   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 8   
 
  427   2                      send_stop();
  428   2                      return 0;
@@ -510,7 +510,7 @@ line level    source
  486   1              *pData = I2DAT;
  487   1              /* stop */
  488   1              return send_stop();
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 9   
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 9   
 
  489   1      }
  490          
@@ -521,269 +521,268 @@ line level    source
  495   1              uint16_t xdata t;
  496   1      
  497   1              if (!I2C_Write_Address(addRead)) {
- 498   2                      printf("Read1 write address Error\n");
- 499   2                      return 0;
- 500   2              }
+ 498   2                      return 0;
+ 499   2              }
+ 500   1      
  501   1      
- 502   1      
- 503   1              if (I2STAT != 0xF8) {
- 504   2                      return 0;
- 505   2              }
- 506   1              
- 507   1              /* start */
- 508   1              STO = 0;
- 509   1              STA = 1;
- 510   1              SI = 0;
- 511   1              t = 1;
- 512   1              u8TimeOut = 0;
- 513   1              
- 514   1              while (1) {
- 515   2                      if (SI) {
- 516   3                              break;
- 517   3                      }
- 518   2                      if (!t) {
- 519   3                              u8TimeOut = 1;
- 520   3                              break;
- 521   3                      }
- 522   2                      ++t;
- 523   2              }
- 524   1              
- 525   1              if (u8TimeOut) {
- 526   2                      /* start error */
- 527   2                      send_stop();
- 528   2                      return 0;
- 529   2              }
- 530   1              
- 531   1              if (I2STAT != 0x08) {
- 532   2                      /* start error */
- 533   2                      send_stop();
- 534   2                      return 0;
- 535   2              }
- 536   1              
- 537   1              /* send address */
- 538   1              STA = 0;
- 539   1              STO = 0;
- 540   1              I2DAT = (EEPROM_SLA | EEPROM_RD);
- 541   1              SI = 0;
- 542   1              t = 1;
- 543   1              u8TimeOut = 0;
- 544   1              while (1) {
- 545   2                      if (SI) {
- 546   3                              break;
- 547   3                      }
- 548   2                      if (!t) {
- 549   3                              u8TimeOut = 1;
- 550   3                              break;
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 10  
+ 502   1              if (I2STAT != 0xF8) {
+ 503   2                      return 0;
+ 504   2              }
+ 505   1              
+ 506   1              /* start */
+ 507   1              STO = 0;
+ 508   1              STA = 1;
+ 509   1              SI = 0;
+ 510   1              t = 1;
+ 511   1              u8TimeOut = 0;
+ 512   1              
+ 513   1              while (1) {
+ 514   2                      if (SI) {
+ 515   3                              break;
+ 516   3                      }
+ 517   2                      if (!t) {
+ 518   3                              u8TimeOut = 1;
+ 519   3                              break;
+ 520   3                      }
+ 521   2                      ++t;
+ 522   2              }
+ 523   1              
+ 524   1              if (u8TimeOut) {
+ 525   2                      /* start error */
+ 526   2                      send_stop();
+ 527   2                      return 0;
+ 528   2              }
+ 529   1              
+ 530   1              if (I2STAT != 0x08) {
+ 531   2                      /* start error */
+ 532   2                      send_stop();
+ 533   2                      return 0;
+ 534   2              }
+ 535   1              
+ 536   1              /* send address */
+ 537   1              STA = 0;
+ 538   1              STO = 0;
+ 539   1              I2DAT = (EEPROM_SLA | EEPROM_RD);
+ 540   1              SI = 0;
+ 541   1              t = 1;
+ 542   1              u8TimeOut = 0;
+ 543   1              while (1) {
+ 544   2                      if (SI) {
+ 545   3                              break;
+ 546   3                      }
+ 547   2                      if (!t) {
+ 548   3                              u8TimeOut = 1;
+ 549   3                              break;
+ 550   3                      }
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 10  
 
- 551   3                      }
- 552   2                      ++t;
- 553   2              }
- 554   1              
- 555   1              if (u8TimeOut) {
- 556   2                      /* send address error */
- 557   2                      send_stop();
- 558   2                      return 0;
- 559   2              }
- 560   1              
- 561   1              if (I2STAT != 0x40) {
- 562   2                      /* send address error */
- 563   2                      send_stop();
- 564   2                      return 0;
- 565   2              }
- 566   1      
- 567   1              // get Data
- 568   1              // for (i = 0; i < length - 1; ++i) {
- 569   1                      AA = 1;
- 570   1                      SI = 0;
- 571   1                      t = 1;
- 572   1                      u8TimeOut = 0;
- 573   1                      while (1) {
- 574   2                              if (SI) {
- 575   3                                      break;
- 576   3                              }
- 577   2                              if (!t) {
- 578   3                                      u8TimeOut = 1;
- 579   3                                      break;
- 580   3                              }
- 581   2                              ++t;
- 582   2                      }
- 583   1                      if (u8TimeOut) {
- 584   2                              /* send data error */
- 585   2                              send_stop();
- 586   2                              return 0;
- 587   2                      }
- 588   1                      if (I2STAT != 0x50) {
- 589   2                              /* send data error */
- 590   2                              send_stop();
- 591   2                              return 0;
- 592   2                      }
- 593   1                      *pData = I2DAT;
- 594   1              // }
- 595   1              
- 596   1              /* last byte */
- 597   1              AA = 0;
- 598   1              SI = 0;
- 599   1              t = 1;
- 600   1              u8TimeOut = 0;
- 601   1              while (1) {
- 602   2                      if (SI) {
- 603   3                              break;
- 604   3                      }
- 605   2                      if (!t) {
- 606   3                              u8TimeOut = 1;
- 607   3                              break;
- 608   3                      }
- 609   2                      ++t;
- 610   2              }
- 611   1              if (u8TimeOut) {
- 612   2                      /* send data error */
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 11  
+ 551   2                      ++t;
+ 552   2              }
+ 553   1              
+ 554   1              if (u8TimeOut) {
+ 555   2                      /* send address error */
+ 556   2                      send_stop();
+ 557   2                      return 0;
+ 558   2              }
+ 559   1              
+ 560   1              if (I2STAT != 0x40) {
+ 561   2                      /* send address error */
+ 562   2                      send_stop();
+ 563   2                      return 0;
+ 564   2              }
+ 565   1      
+ 566   1              // get Data
+ 567   1              // for (i = 0; i < length - 1; ++i) {
+ 568   1                      AA = 1;
+ 569   1                      SI = 0;
+ 570   1                      t = 1;
+ 571   1                      u8TimeOut = 0;
+ 572   1                      while (1) {
+ 573   2                              if (SI) {
+ 574   3                                      break;
+ 575   3                              }
+ 576   2                              if (!t) {
+ 577   3                                      u8TimeOut = 1;
+ 578   3                                      break;
+ 579   3                              }
+ 580   2                              ++t;
+ 581   2                      }
+ 582   1                      if (u8TimeOut) {
+ 583   2                              /* send data error */
+ 584   2                              send_stop();
+ 585   2                              return 0;
+ 586   2                      }
+ 587   1                      if (I2STAT != 0x50) {
+ 588   2                              /* send data error */
+ 589   2                              send_stop();
+ 590   2                              return 0;
+ 591   2                      }
+ 592   1                      *pData = I2DAT;
+ 593   1              // }
+ 594   1              
+ 595   1              /* last byte */
+ 596   1              AA = 0;
+ 597   1              SI = 0;
+ 598   1              t = 1;
+ 599   1              u8TimeOut = 0;
+ 600   1              while (1) {
+ 601   2                      if (SI) {
+ 602   3                              break;
+ 603   3                      }
+ 604   2                      if (!t) {
+ 605   3                              u8TimeOut = 1;
+ 606   3                              break;
+ 607   3                      }
+ 608   2                      ++t;
+ 609   2              }
+ 610   1              if (u8TimeOut) {
+ 611   2                      /* send data error */
+ 612   2                      send_stop();
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 11  
 
- 613   2                      send_stop();
- 614   2                      return 0;
- 615   2              }
- 616   1              if (I2STAT != 0x58) {
- 617   2                      /* send data error */
- 618   2                      send_stop();
- 619   2                      return 0;
- 620   2              }
- 621   1              *pData = (*pData << 8) | I2DAT;
- 622   1              /* stop */
- 623   1              return send_stop();
- 624   1      }
- 625          
- 626          bit I2C_CheckAddress(uint8_t Address)
- 627          {
- 628   1              uint16_t xdata t;
- 629   1              uint8_t xdata u8TimeOut;
+ 613   2                      return 0;
+ 614   2              }
+ 615   1              if (I2STAT != 0x58) {
+ 616   2                      /* send data error */
+ 617   2                      send_stop();
+ 618   2                      return 0;
+ 619   2              }
+ 620   1              *pData = (*pData << 8) | I2DAT;
+ 621   1              /* stop */
+ 622   1              return send_stop();
+ 623   1      }
+ 624          
+ 625          bit I2C_CheckAddress(uint8_t Address)
+ 626          {
+ 627   1              uint16_t xdata t;
+ 628   1              uint8_t xdata u8TimeOut;
+ 629   1              
  630   1              
- 631   1              
- 632   1              if (I2STAT != 0xF8) {
- 633   2                      return 0;
- 634   2              }
- 635   1              
- 636   1              /* start */
- 637   1              STO = 0;
- 638   1              STA = 1;
- 639   1              SI = 0;
- 640   1              t = 1;
- 641   1              u8TimeOut = 0;
- 642   1              
- 643   1              while (1) {
- 644   2                      if (SI) {
- 645   3                              break;
- 646   3                      }
- 647   2                      if (!t) {
- 648   3                              u8TimeOut = 1;
- 649   3                              break;
- 650   3                      }
- 651   2                      ++t;
- 652   2              }
- 653   1              
- 654   1              if (u8TimeOut) {
- 655   2                      /* start error */
- 656   2                      send_stop();
- 657   2                      return 0;
- 658   2              }
- 659   1              
- 660   1              if (I2STAT != 0x08) {
- 661   2                      /* start error */
- 662   2                      send_stop();
- 663   2                      return 0;
- 664   2              }
- 665   1              
- 666   1              /* send address */
- 667   1              STA = 0;
- 668   1              STO = 0;
- 669   1              I2DAT = (Address | EEPROM_RD);
- 670   1              SI = 0;
- 671   1              t = 1;
- 672   1              u8TimeOut = 0;
- 673   1              while (1) {
- 674   2                      if (SI) {
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 12  
+ 631   1              if (I2STAT != 0xF8) {
+ 632   2                      return 0;
+ 633   2              }
+ 634   1              
+ 635   1              /* start */
+ 636   1              STO = 0;
+ 637   1              STA = 1;
+ 638   1              SI = 0;
+ 639   1              t = 1;
+ 640   1              u8TimeOut = 0;
+ 641   1              
+ 642   1              while (1) {
+ 643   2                      if (SI) {
+ 644   3                              break;
+ 645   3                      }
+ 646   2                      if (!t) {
+ 647   3                              u8TimeOut = 1;
+ 648   3                              break;
+ 649   3                      }
+ 650   2                      ++t;
+ 651   2              }
+ 652   1              
+ 653   1              if (u8TimeOut) {
+ 654   2                      /* start error */
+ 655   2                      send_stop();
+ 656   2                      return 0;
+ 657   2              }
+ 658   1              
+ 659   1              if (I2STAT != 0x08) {
+ 660   2                      /* start error */
+ 661   2                      send_stop();
+ 662   2                      return 0;
+ 663   2              }
+ 664   1              
+ 665   1              /* send address */
+ 666   1              STA = 0;
+ 667   1              STO = 0;
+ 668   1              I2DAT = (Address | EEPROM_RD);
+ 669   1              SI = 0;
+ 670   1              t = 1;
+ 671   1              u8TimeOut = 0;
+ 672   1              while (1) {
+ 673   2                      if (SI) {
+ 674   3                              break;
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 12  
 
- 675   3                              break;
- 676   3                      }
- 677   2                      if (!t) {
- 678   3                              u8TimeOut = 1;
- 679   3                              break;
- 680   3                      }
- 681   2                      ++t;
- 682   2              }
- 683   1              
- 684   1              if (u8TimeOut) {
- 685   2                      /* send address error */
- 686   2                      send_stop();
- 687   2                      return 0;
- 688   2              }
- 689   1              
- 690   1              if (I2STAT != 0x40) {
- 691   2                      /* send address error */
- 692   2                      send_stop();
- 693   2                      return 0;
- 694   2              }
- 695   1              
- 696   1              /* last byte */
- 697   1              AA = 0;
- 698   1              SI = 0;
- 699   1              t = 1;
- 700   1              u8TimeOut = 0;
- 701   1              while (1) {
- 702   2                      if (SI) {
- 703   3                              break;
- 704   3                      }
- 705   2                      if (!t) {
- 706   3                              u8TimeOut = 1;
- 707   3                              break;
- 708   3                      }
- 709   2                      ++t;
- 710   2              }
- 711   1              if (u8TimeOut) {
- 712   2                      /* send data error */
- 713   2                      send_stop();
- 714   2                      return 0;
- 715   2              }
- 716   1              if (I2STAT != 0x58) {
- 717   2                      /* send data error */
- 718   2                      send_stop();
- 719   2                      return 0;
- 720   2              }
- 721   1              t = I2DAT;
- 722   1              /* stop */
- 723   1              return send_stop();
- 724   1      }
- 725          
- 726          bit send_stop(void)
- 727          {
- 728   1              uint16_t xdata t;
- 729   1              uint8_t xdata u8TimeOut;
- 730   1              
- 731   1              STA = 0;
- 732   1              STO = 1;
- 733   1              SI = 0;
- 734   1              t = 1;
- 735   1              u8TimeOut = 0;
- 736   1              while (1) {
-C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/12/2024 10:55:12 PAGE 13  
+ 675   3                      }
+ 676   2                      if (!t) {
+ 677   3                              u8TimeOut = 1;
+ 678   3                              break;
+ 679   3                      }
+ 680   2                      ++t;
+ 681   2              }
+ 682   1              
+ 683   1              if (u8TimeOut) {
+ 684   2                      /* send address error */
+ 685   2                      send_stop();
+ 686   2                      return 0;
+ 687   2              }
+ 688   1              
+ 689   1              if (I2STAT != 0x40) {
+ 690   2                      /* send address error */
+ 691   2                      send_stop();
+ 692   2                      return 0;
+ 693   2              }
+ 694   1              
+ 695   1              /* last byte */
+ 696   1              AA = 0;
+ 697   1              SI = 0;
+ 698   1              t = 1;
+ 699   1              u8TimeOut = 0;
+ 700   1              while (1) {
+ 701   2                      if (SI) {
+ 702   3                              break;
+ 703   3                      }
+ 704   2                      if (!t) {
+ 705   3                              u8TimeOut = 1;
+ 706   3                              break;
+ 707   3                      }
+ 708   2                      ++t;
+ 709   2              }
+ 710   1              if (u8TimeOut) {
+ 711   2                      /* send data error */
+ 712   2                      send_stop();
+ 713   2                      return 0;
+ 714   2              }
+ 715   1              if (I2STAT != 0x58) {
+ 716   2                      /* send data error */
+ 717   2                      send_stop();
+ 718   2                      return 0;
+ 719   2              }
+ 720   1              t = I2DAT;
+ 721   1              /* stop */
+ 722   1              return send_stop();
+ 723   1      }
+ 724          
+ 725          bit send_stop(void)
+ 726          {
+ 727   1              uint16_t xdata t;
+ 728   1              uint8_t xdata u8TimeOut;
+ 729   1              
+ 730   1              STA = 0;
+ 731   1              STO = 1;
+ 732   1              SI = 0;
+ 733   1              t = 1;
+ 734   1              u8TimeOut = 0;
+ 735   1              while (1) {
+ 736   2                      if (I2STAT == 0xF8) {
+C51 COMPILER V9.60.0.0   I2CEEPROM                                                         01/17/2024 15:52:28 PAGE 13  
 
- 737   2                      if (I2STAT == 0xF8) {
- 738   3                              break;
- 739   3                      }
- 740   2                      if (!t) {
- 741   3                              u8TimeOut = 1;
- 742   3                              break;
- 743   3                      }
- 744   2                      ++t;
- 745   2              }
- 746   1              return (!u8TimeOut);
- 747   1      }
+ 737   3                              break;
+ 738   3                      }
+ 739   2                      if (!t) {
+ 740   3                              u8TimeOut = 1;
+ 741   3                              break;
+ 742   3                      }
+ 743   2                      ++t;
+ 744   2              }
+ 745   1              return (!u8TimeOut);
+ 746   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1842    ----
-   CONSTANT SIZE    =     27    ----
+   CODE SIZE        =   1832    ----
+   CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----      22
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----      13

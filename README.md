@@ -73,7 +73,7 @@ Open project in keilC, go to `Options for Target` -> `tab C51`, add `"..\..\LIB"
 &nbsp;
 
 ### `_ GPIO Setup _ (sử dụng thư viện "GPIO.h" tự tạo)`
-USE library `GPIO.h` __ Sử dụng thư viện GPIO.h
+####USE library `GPIO.h` __ Sử dụng thư viện GPIO.h
 ```c
     #include "GPIO.h"
 ```
