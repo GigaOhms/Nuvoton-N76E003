@@ -34,15 +34,13 @@ uint8_t serial_read() {
 
 void main (void) 
 {
-	uint8_t c;
 	InitialUART0_Timer3(9600);										// 9600, 115200 - oke
 	TI = 1;															// Important, use prinft function must set TI=1;
 	
 	while(1)
 	{
-		if (RI == 1) {
-			RI = 0;
-			c = SBUF;
+		if (serial_available() == 1) {
+			uint8_t c = serial_read();
 			Send_Data_To_UART0(c);
 		}
 	}

@@ -59,10 +59,10 @@ void main (void)
 	
 	while(1)
 	{
-		if (RI == 1) {
-			RI = 0;
-			c = SBUF;
-			Send_Data_To_UART0(c);
+		if (RI == 1) {          // Serial.available()
+			RI = 0;             // clear available
+			c = SBUF;           // Serial.read()
+			Send_Data_To_UART0(c);  //Serial.write()
 		}
 	}
 }
@@ -143,7 +143,7 @@ while(1) {
 
 &nbsp;
 
-### `Tạo 2 hàm nhận dữ liệu Serial cơ bản như arduino`
+### `Tạo 2 hàm Serial.read() và Serial.available() như arduino`
 ```c
 bit serial_available() {
 	return RI;
