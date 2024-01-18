@@ -49,23 +49,39 @@ Send_Data_To_UART0(byteData);       // Gửi 1 byte qua uart
 TI = 1;                             // Sử dụng khi muốn dùng hàm `printf()`
 printf("Hello world");              // Sử dụng như hàm printf trong C, gửi dữ liệu qua Serial
 ```
-
+- Example UART
 ```c
+//  -------------------------------- UART0 ---------------------------
 void main (void) 
 {
 	uint8_t c;
-	InitialUART0_Timer3(9600);  // 9600, 115200 - oke
-	TI = 1;	                    // Important, use prinft function must set TI=1;
+	InitialUART0_Timer3(9600);      // 9600, 115200 - oke
+	TI = 1;                         // Important, use prinft function must set TI=1;
 	
 	while(1)
 	{
-		if (RI == 1) {          // Serial.available()
-			RI = 0;             // clear available
-			c = SBUF;           // Serial.read()
+		if (RI == 1) {              // Serial.available()
+			RI = 0;                 // clear available
+			c = SBUF;               // Serial.read()
 			Send_Data_To_UART0(c);  //Serial.write()
 		}
 	}
 }
+
+void main (void) 
+{
+	InitialUART0_Timer3(9600);      // 9600, 115200 - oke
+	TI = 1;                         // Important, use prinft function must set TI=1;
+	
+	while(1)
+	{
+        printf("Hello world !!!");
+	}
+}
+
+//  -------------------------------- UART1 ---------------------------
+
+/* Tương tự, nhưng thay các từ khóa UART0, TI, RI, SBUF -> UART1, TI_1, RI_1, SBUF_1 */
 ```
     
 ### Timer delay __ Các hàm delay được tạo sẵn
