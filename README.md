@@ -49,6 +49,24 @@ Send_Data_To_UART0(byteData);       // Gửi 1 byte qua uart
 TI = 1;                             // Sử dụng khi muốn dùng hàm `printf()`
 printf("Hello world");              // Sử dụng như hàm printf trong C, gửi dữ liệu qua Serial
 ```
+
+```c
+void main (void) 
+{
+	uint8_t c;
+	InitialUART0_Timer3(9600);  // 9600, 115200 - oke
+	TI = 1;	                    // Important, use prinft function must set TI=1;
+	
+	while(1)
+	{
+		if (RI == 1) {
+			RI = 0;
+			c = SBUF;
+			Send_Data_To_UART0(c);
+		}
+	}
+}
+```
     
 ### Timer delay __ Các hàm delay được tạo sẵn
 
@@ -127,16 +145,35 @@ while(1) {
 
 ### `Tạo 2 hàm nhận dữ liệu Serial cơ bản như arduino`
 ```c
-uint8_t serial_available() {
-	return RI ? 1 : 0;
+bit serial_available() {
+	return RI;
 }
 
+
 uint8_t serial_read() {
-	uint8_t c = SBUF;
 	RI = 0;
-	return c;
+	return SBUF;
 }
+
+void main (void) 
+{
+	InitialUART0_Timer3(9600);  // 9600, 115200 - oke
+	TI = 1;                     // Important, use prinft function must set TI=1;
+	
+	while(1)
+	{
+		if (serial_available() == 1) {
+			uint8_t c = serial_read();
+			Send_Data_To_UART0(c);
+		}
+	}
+}
+
 ```
+
+
+
+
 &nbsp;
 
 ### `Timer2 interrupt __ tạo ngắt Timer2 1kHz (dùng như millis() trên arduino)`
