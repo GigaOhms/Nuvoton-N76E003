@@ -200,13 +200,15 @@ void Timer2_ISR (void) interrupt 5                      // Timer2 ISR funtion
 }
 
 // --------------- Setup ISR timer2 1kHz -----------------------
-TIMER2_DIV_4;
-TIMER2_Auto_Reload_Delay_Mode;
-RCMP2L = TIMER_DIV4_VALUE_1ms;
-RCMP2H = TIMER_DIV4_VALUE_1ms >> 8;
-TH2 = 0;
-TL2 = 0;
-set_TR2;    // Timer2 run
-set_ET2;    // Enable Timer2 interrupt
-set_EA;		// Enable global interrupts
+TIMER2_DIV_4;                           // Đặt xung nhịp Timer2 là FCLK/4
+TIMER2_Auto_Reload_Delay_Mode;          // Đặt Timer2 chế độ auto reload
+RCMP2L = TIMER_DIV4_VALUE_1ms;          // Đặt thanh ghi chứa giá trị reload 8 bit thấp 
+                                        // TIMER_DIV4_VALUE_1ms = (65536 - (16,0000,000 / 4  / 1000))
+RCMP2H = TIMER_DIV4_VALUE_1ms >> 8;     // Đặt thanh ghi chứa giá trị reload 8 bit cao
+                                        // TIMER_DIV4_VALUE_1ms = (65536 - (16,0000,000 / 4  / 1000))
+TH2 = 0;                                // Thanh ghi chứa giá trị đếm 8bit cao của Timer2
+TL2 = 0;                                // Thanh ghi chứa giá trị đếm 8bit thấp của Timer2
+set_TR2;                                // Timer2 run
+set_ET2;                                // Enable Timer2 interrupt
+set_EA;                                 // Enable global interrupts
 ```
