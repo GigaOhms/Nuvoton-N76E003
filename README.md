@@ -57,9 +57,11 @@ P12_OpenDrain_Mode;                 // Set gpio P12 chế độ Open-Drain   - O
 * GPIO set
 ```c
 P04 = 1                             // Set gpio P04 lên cao (mức 1)
-P11 = 0                             // Set gpio P04 mức thấp (mức 0)
-value = P05;                        // Đọc giá trị input ở gpio P05 (low - high)
+P11 = 0                             // Set gpio P04 mức thấp 
 
+* GPIO read status
+```c
+value = P05;                        // Đọc giá trị input ở gpio P05 (low - high)
 ```
 
 ### UART
@@ -128,7 +130,7 @@ Open project in keilC, go to `Options for Target` -> `tab C51`, add `"..\..\LIB"
 &nbsp;
 
 ### `_ GPIO Setup _ (sử dụng thư viện "GPIO.h" tự tạo)`
-####USE library `GPIO.h` __ Sử dụng thư viện GPIO.h
+#### USE library `GPIO.h` __ Sử dụng thư viện GPIO.h
 ```c
     #include "GPIO.h"
 ```
