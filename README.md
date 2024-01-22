@@ -47,12 +47,15 @@ xdata float varFloat;
 
 ## `__ Some default command __ (một số lệnh mặc định)`
 ### GPIO
+* GPIO mode
 ```c
 P04_PushPull_Mode;                  // Set gpio P04 chế độ Push-pull    - Output low-high
 P11_Quasi_Mode;                     // Set gpio P11 chế độ Quasi        - Output low-high, input
 P05_Input_Mode;                     // Set gpio P05 chế độ Input        - Input
 P12_OpenDrain_Mode;                 // Set gpio P12 chế độ Open-Drain   - Output low, input
-
+```
+* GPIO set
+```c
 P04 = 1                             // Set gpio P04 lên cao (mức 1)
 P11 = 0                             // Set gpio P04 mức thấp (mức 0)
 value = P05;                        // Đọc giá trị input ở gpio P05 (low - high)
