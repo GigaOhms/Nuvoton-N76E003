@@ -12,6 +12,7 @@ Project using Nuvoton-N76E003 8051 and library TM1637 Display, I2C EEPROM AT24Cx
 ## Tutorial and example project:
 - [VN](http://vidieukhien.org/category/8051/ms51fb9ae)
 - [EN](https://embedded-lab.com/blog/getting-started-nuvoton-8-bit-microcontrollers-coding-part-1/)
+- [Sample code Microchip-nuvoton](https://github.com/OpenNuvoton/N76E003-BSP/tree/master/Sample_Code)
 
 &nbsp;
 
@@ -130,7 +131,7 @@ Open project in keilC, go to `Options for Target` -> `tab C51`, add `"..\..\LIB"
 &nbsp;
 
 ### `_ GPIO Setup _ (sử dụng thư viện "GPIO.h" tự tạo)`
-#### USE library `GPIO.h` __ Sử dụng thư viện GPIO.h
+#### USE library `LIB\GPIO.h` __ Sử dụng thư viện GPIO.h
 ```c
     #include "GPIO.h"
 ```
@@ -238,7 +239,7 @@ set_EA;                                 // Enable global interrupts
 
 &nbsp;
 
-### `Sử dụng thư viện I2Ceeprom.h`
+### `Đọc ghi EEPROM - Sử dụng thư viện LIB\I2Ceeprom.h`
 * Gồm 2 thư viện 
 * `I2Ceeprom.h` sử dụng cho IC eeprom có 1k, 2k bit [AT24C01, AT24C02]
 * `I2Ceeprom2.h` sử dụng cho các IC eeprom khác có bộ nhớ lớn hơn [AT24C04, AT24C08, AT24C16, 32, ...]
