@@ -240,6 +240,7 @@ set_EA;                                 // Enable global interrupts
 &nbsp;
 
 ### `Đọc ghi EEPROM - Sử dụng thư viện LIB\I2Ceeprom.h`
+### Tham khảo từ bài viết [MS51FB9AE – I2C](http://vidieukhien.org/ms51fb9ae-i2c.html)
 * Gồm 2 thư viện 
 * `I2Ceeprom.h` sử dụng cho IC eeprom có 1k, 2k bit [AT24C01, AT24C02]
 * `I2Ceeprom2.h` sử dụng cho các IC eeprom khác có bộ nhớ lớn hơn [AT24C04, AT24C08, AT24C16, 32, ...]
