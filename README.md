@@ -5,12 +5,27 @@ Project using Nuvoton-N76E003 8051 and library TM1637 Display, I2C EEPROM AT24Cx
 #### Datasheet [N76E003AT20](https://www.nuvoton.com/export/resource-files/DS_N76E003_EN_Rev1.10.pdf)
 
 #### Download [package KeilC or IAR for N76E003](https://www.nuvoton.com/products/microcontrollers/8bit-8051-mcus/low-pin-count-8051-series/n76e003/?group=Software&tab=2) or this Repo
-#### Sử dụng mạch nạp [VNpro for 89S&AVR](https://www.proe.vn/mach-nap-vn-pro-for-89s-avr-1) như hướng dẫn [USB VNpro in KeilC](http://vidieukhien.org/tich-hop-kit-vdk-1-0-vao-keil-c.html)
-#### Hoặc [USB VNpro in  ISP Prog v6](http://vidieukhien.org/phan-mem-isp-prog-v6.html) để nạp chương trình
+#### Sử dụng mạch nạp [VNpro for 89S&AVR](https://www.proe.vn/mach-nap-vn-pro-for-89s-avr-1) như hướng dẫn [USB VNpro in KeilC](http://vidieukhien.org/tich-hop-kit-vdk-1-0-vao-keil-c.html) để nạp chương trình trong Keil-C
+#### Hoặc [USB VNpro in  ISP Prog v6](http://vidieukhien.org/phan-mem-isp-prog-v6.html) để nạp file hex.
+
 
 ## Tutorial and example project:
 - [VN](http://vidieukhien.org/category/8051/ms51fb9ae)
 - [EN](https://embedded-lab.com/blog/getting-started-nuvoton-8-bit-microcontrollers-coding-part-1/)
+
+&nbsp;
+
+## `__ Standard library __ (Các thư viện chuẩn)`
+
+- Các thư viện chuẩn được gọi ở tất cả project
+
+```c
+#include "N76E003.h"
+#include "SFR_Macro.h"
+#include "Function_define.h"
+#include "Common.h"
+#include "Delay.h"
+```
 
 &nbsp;
 
@@ -22,7 +37,10 @@ bit var;                // size: 1 bit - tương tự như bool, chỉ có 2 gi�
 xdata dataType var;     // 'xdata' - là một từ khóa được sử dụng để chỉ định rằng biến nên được lưu trữ 
                         // trong vùng nhớ ngoại vi thay vì được lưu trên vùng nhớ chính.
                         // Giúp giải phóng bộ nhớ chính cho các tác vụ quan trọng
-
+                        
+bit var1bit;
+xdata int varInt;
+xdata float varFloat;
 ```
 
 &nbsp;
@@ -200,11 +218,11 @@ void Timer2_ISR (void) interrupt 5                      // Timer2 ISR funtion
 }
 
 // --------------- Setup ISR timer2 1kHz -----------------------
-TIMER2_DIV_4;                           // Đặt xung nhịp Timer2 là FCLK/4
+TIMER2_DIV_4;                           // Đặt xung nhịp Timer2 là FCLK/4 = 16M / 4 = 4M
 TIMER2_Auto_Reload_Delay_Mode;          // Đặt Timer2 chế độ auto reload
-RCMP2L = TIMER_DIV4_VALUE_1ms;          // Đặt thanh ghi chứa giá trị reload 8 bit thấp 
+RCMP2L = TIMER_DIV4_VALUE_1ms;          // Đặt 8 bit thấp của giá trị reload cho thanh ghi reload
                                         // TIMER_DIV4_VALUE_1ms = (65536 - (16,0000,000 / 4  / 1000))
-RCMP2H = TIMER_DIV4_VALUE_1ms >> 8;     // Đặt thanh ghi chứa giá trị reload 8 bit cao
+RCMP2H = TIMER_DIV4_VALUE_1ms >> 8;     // Đặt 8 bit cao của giá trị reload cho thanh ghi reload
                                         // TIMER_DIV4_VALUE_1ms = (65536 - (16,0000,000 / 4  / 1000))
 TH2 = 0;                                // Thanh ghi chứa giá trị đếm 8bit cao của Timer2
 TL2 = 0;                                // Thanh ghi chứa giá trị đếm 8bit thấp của Timer2
@@ -216,15 +234,13 @@ set_EA;                                 // Enable global interrupts
 &nbsp;
 
 ### `Sử dụng thư viện I2Ceeprom.h`
+* Gồm 2 thư viện 
+* `I2Ceeprom.h` sử dụng cho IC eeprom có 1k, 2k bit [AT24C01, AT24C02]
+* `I2Ceeprom2.h` sử dụng cho các IC eeprom khác có bộ nhớ lớn hơn [AT24C04, AT24C08, AT24C16, 32, ...]
+* Các hàm sẽ trả về `1` nếu đọc, ghi dữ liệu thành công và trả về `0` khi thất bại
 
 #### Các hàm được tạo
 ```c
-// Gồm 2 thư viện 
-// I2Ceeprom.h sử dụng cho IC eeprom có 1k, 2k bit [AT24C01, AT24C02]
-// I2Ceeprom2.h sử dụng cho các IC eeprom khác có bộ nhớ lớn hơn [AT24C04, AT24C08, AT24C16, 32, ...]
-// Các hàm sẽ trả về 1 nếu đọc, ghi dữ liệu thành công và trả về 0 khi thất bại
-
-
 I2C_CheckAddress(address_IC_eeprom);    // Trả về 1 nếu có địa chỉ IC eeprom tồn tại
 I2C_write(address, value);              // Ghi 1 byte value vào ô nhớ có địa chỉ address
 I2C_writeInt(address, valueInt);        // Ghi data kiểu Int vào ô nhớ có địa chỉ address
