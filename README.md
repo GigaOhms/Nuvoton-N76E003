@@ -217,6 +217,15 @@ void main (void)
 &nbsp;
 
 ### `set up Timer2 interrupt __ tạo ngắt Timer2 1kHz (dùng như millis() trên arduino)`
+#### Timer 2 được là timer 16 bit đếm xuống (65536 -> 0)
+#### Để thiết lập ngắt timer 1khz ta tính như sau:
+* Thiết lập bộ chia CLK (1, 4, 16, 32, 64, 128, 256, 512): Ftimer = FCLK_SYS / DIV
+* Đặt chế độ autoReload cho timer2
+* Tính giá trị reload và đặt vào thanh ghi reload
+* counter = chu kì (s) * 1,000,000
+* reload_value = 65536 -  (Ftimer * counter)
+* Đặt vào thanh ghi reload và Kích hoạt timer chạy
+* Sự kiện ngắt sẽ được đặt trong hàm `Timer2_ISR` như ví dụ bên dưới
 ```c
 void Timer2_ISR (void) interrupt 5                      // Timer2 ISR funtion
 {
