@@ -152,7 +152,7 @@ pinMode(4,  INPUT_OD);
 
 &nbsp;
 
-### `_ digital-Write-Read _ đọc, ghi tín hiệu digital`
+### `_ digital-Write-Read (LIB\GPIO.h) _ đọc, ghi tín hiệu digital`
 
 - Set output gpio `P15` to `HIGH`, gpio `P05` to `LOW`
 ```c
@@ -168,7 +168,7 @@ digitalRead(3);
 ```
 &nbsp;
 
-### `_ analogRead _ đọc tín hiệu ADC gpio`
+### `_ analogRead (LIB\GPIO.h) _ đọc tín hiệu ADC gpio`
 
 - N76E003 có 8 gpio có thể đọc tín hiệu ADC là các chân gpio `AINx` (x = 0 -> 7)
 
@@ -216,7 +216,7 @@ void main (void)
 
 &nbsp;
 
-### `Timer2 interrupt __ tạo ngắt Timer2 1kHz (dùng như millis() trên arduino)`
+### `set up Timer2 interrupt __ tạo ngắt Timer2 1kHz (dùng như millis() trên arduino)`
 ```c
 void Timer2_ISR (void) interrupt 5                      // Timer2 ISR funtion
 {
