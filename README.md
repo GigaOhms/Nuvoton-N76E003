@@ -59,7 +59,7 @@ P12_OpenDrain_Mode;                 // Set gpio P12 chế độ Open-Drain   - O
 ```c
 P04 = 1                             // Set gpio P04 lên cao (mức 1)
 P11 = 0                             // Set gpio P04 mức thấp 
-
+```
 * GPIO read status
 ```c
 value = P05;                        // Đọc giá trị input ở gpio P05 (low - high)
