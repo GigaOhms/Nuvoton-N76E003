@@ -212,3 +212,59 @@ set_TR2;                                // Timer2 run
 set_ET2;                                // Enable Timer2 interrupt
 set_EA;                                 // Enable global interrupts
 ```
+
+&nbsp;
+
+### `Sử dụng thư viện I2Ceeprom.h`
+
+#### Các hàm được tạo
+```c
+// Gồm 2 thư viện 
+// I2Ceeprom.h sử dụng cho IC eeprom có 1k, 2k bit [AT24C01, AT24C02]
+// I2Ceeprom2.h sử dụng cho các IC eeprom khác có bộ nhớ lớn hơn [AT24C04, AT24C08, AT24C16, 32, ...]
+// Các hàm sẽ trả về 1 nếu đọc, ghi dữ liệu thành công và trả về 0 khi thất bại
+
+
+I2C_CheckAddress(address_IC_eeprom);    // Trả về 1 nếu có địa chỉ IC eeprom tồn tại
+I2C_write(address, value);              // Ghi 1 byte value vào ô nhớ có địa chỉ address
+I2C_writeInt(address, valueInt);        // Ghi data kiểu Int vào ô nhớ có địa chỉ address
+I2C_read(address, &var);                // Đọc 1 byte dữ liệu từ địa chỉ address, lưu giá trị vào biến var
+I2C_readInt(address, &var);             // Đọc data kiểu Int từ địa chỉ address, lưu giá trị vào biến var
+```
+
+
+```c
+#include "I2Ceeprom.h"
+
+#define WAIT_I2C 2      // 2ms write data
+
+void main(void)
+{
+    char varByte = 0x0;     // 1 byte
+    uint16_t varInt;        // 2 byte
+    
+    // Kiểm tra địa chỉ I2C của IC eeprom có tồn tại không
+    if (!I2C_CheckAddress(EEPROM_SLA))  // EEPROM_SLA: mặc định 0xA0 - cấu hình trên phần cứng
+        printf("Check Error\n"); 
+    
+    Timer0_Delay1ms(WAIT_I2C);
+    
+    	/* write data EEPROM */
+    	
+	if (!I2C_WriteInt(2, 1234))     // Ghi vào địa chỉ eeprom 2, giá trị kiểu Int 1234
+	    printf("Write data Error\n");
+	Timer0_Delay1ms(WAIT_I2C);
+	    
+	if (!I2C_Write(6, 0x04))        // Ghi 1 byte vào địa chỉ eeprom 6, giá trị 0x04 = 4
+	    printf("Write data Error\n");
+	Timer0_Delay1ms(WAIT_I2C);
+	 
+	    /* read data EEPROM */
+	
+	if (!I2C_ReadInt(2, &varInt))   // Đọc dữ liệu kiểu Int (2 byte) ở địa chỉ 4, lưu giá trị vào biến 'varInt'
+        printf("Read data Error\n");
+    
+	if (!I2C_Read(6, &varByte))     // Đọc 1 byte data ở địa chỉ 6, lưu giá trị vào viến varByte   
+        printf("Read data Error 3\n");
+}
+```

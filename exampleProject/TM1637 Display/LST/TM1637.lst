@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   TM1637                                                            01/17/2024 10:01:18 PAGE 1   
+C51 COMPILER V9.60.0.0   TM1637                                                            01/19/2024 10:35:46 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TM1637
@@ -62,7 +62,7 @@ line level    source
   51          
   52          
   53          void TM1637_clear(TM1637* display) {
-C51 COMPILER V9.60.0.0   TM1637                                                            01/17/2024 10:01:18 PAGE 2   
+C51 COMPILER V9.60.0.0   TM1637                                                            01/19/2024 10:35:46 PAGE 2   
 
   54   1        uint8_t xdata datas[4] = {0, 0, 0, 0};
   55   1        TM1637_setSegments(display, datas);
@@ -126,7 +126,7 @@ line level    source
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    668    ----
    CONSTANT SIZE    =      4    ----
-C51 COMPILER V9.60.0.0   TM1637                                                            01/17/2024 10:01:18 PAGE 3   
+C51 COMPILER V9.60.0.0   TM1637                                                            01/19/2024 10:35:46 PAGE 3   
 
    XDATA SIZE       =     16       8
    PDATA SIZE       =   ----    ----

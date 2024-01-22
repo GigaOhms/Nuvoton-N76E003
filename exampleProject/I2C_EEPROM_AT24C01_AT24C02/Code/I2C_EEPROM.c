@@ -20,9 +20,11 @@ void main(void)
 
 	uint16_t sum, sum1;
 
+	// GPIO 12 Blink led
 	P1M1 &= ~(1 << 2);
     P1M2 |= (1 << 2);
 	P12 = 0;
+
     InitialUART0_Timer3(115200);
     TI = 1;	
 	

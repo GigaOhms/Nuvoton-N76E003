@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    01/17/2024  10:01:19  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    01/19/2024  10:35:47  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -59,7 +59,7 @@ LINK MAP OF MODULE:  .\Output\GPIO (MAIN)
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 2
 
 
             CODE    0003H     02EDH     UNIT         ?C?LIB_CODE
@@ -119,7 +119,7 @@ SEGMENT                                       BIT_GROUP          DATA_GROUP     
   +--> ?PR?_DIGITALWRITE?GPIO
 
 ?PR?_PINMODE?GPIO                          0020H.1  0000H.1    -----    -----      -----    -----
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 3
 
 
 
@@ -179,7 +179,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   D:00E8H         PUBLIC        ADCCON0
   D:00C0H         PUBLIC        I2CON
   D:0024H         PUBLIC        error1
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 4
 
 
   D:0025H         PUBLIC        error2
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   C:07DCH         PUBLIC        _TM1637_setSegments
   D:003FH         SYMBOL        minusSegments
   -------         PROC          _TM1637_INIT
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 5
 
 
   D:0008H         SYMBOL        display
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   -------         ENDPROC       _TM1637_START
   -------         PROC          L?0021
   -------         ENDPROC       L?0021
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 6
 
 
   -------         PROC          _TM1637_STOP
@@ -359,7 +359,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   C:0D1AH         LINE#         110
   -------         ENDPROC       _TM1637_ENCODEDIGIT
   -------         ENDMOD        TM1637
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 7
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 7
 
 
 
@@ -419,7 +419,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   B:0020H.1       SYMBOL        registerPin
   -------         ENDDO         
   C:02F0H         LINE#         9
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 8
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 8
 
 
   C:02F0H         LINE#         10
@@ -479,7 +479,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   -------         ENDPROC       _PINMODE
   -------         PROC          _DIGITALREAD
   D:0007H         SYMBOL        pin
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 9
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 9
 
 
   C:074AH         LINE#         74
@@ -539,7 +539,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   C:058FH         LINE#         125
   C:0596H         LINE#         126
   C:059AH         LINE#         127
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 10
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 10
 
 
   C:05A1H         LINE#         128
@@ -599,7 +599,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   C:0ADAH         LINE#         189
   C:0ADFH         LINE#         190
   C:0AE3H         LINE#         191
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 11
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 11
 
 
   C:0AE8H         LINE#         192
@@ -659,7 +659,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   C:0B02H         LINE#         24
   C:0B05H         LINE#         25
   C:0B08H         LINE#         26
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 12
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 12
 
 
   C:0B0AH         LINE#         27
@@ -719,7 +719,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   C:0A71H         LINE#         76
   C:0A73H         LINE#         77
   C:0A86H         LINE#         78
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 13
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 13
 
 
   C:0A86H         LINE#         79
@@ -779,7 +779,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   D:00B0H         PUBLIC        P3
   D:00D8H         PUBLIC        PWMCON0
   D:00A8H         PUBLIC        IE
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 14
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 14
 
 
   D:00B8H         PUBLIC        IP
@@ -839,7 +839,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   C:086DH         LINE#         53
   C:0870H         LINE#         56
   C:0899H         LINE#         57
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 15
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 15
 
 
   C:08B3H         LINE#         63
@@ -899,7 +899,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   C:0D3EH         LINE#         118
   C:0D3EH         LINE#         119
   C:0D40H         LINE#         120
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 16
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 16
 
 
   C:0D42H         LINE#         121
@@ -959,7 +959,7 @@ SYMBOL TABLE OF MODULE:  .\Output\GPIO (MAIN)
   -------         MODULE        ?C?COPY
   C:00D3H         PUBLIC        ?C?COPY
   -------         ENDMOD        ?C?COPY
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/17/2024  10:01:19  PAGE 17
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  01/19/2024  10:35:47  PAGE 17
 
 
 
